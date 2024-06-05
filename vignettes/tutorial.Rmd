@@ -1,0 +1,192 @@
+---
+title: "A tutorial on the cumulative calibration assessment and the cumulcalib package"
+author: "Mohsen Sadatsafavi"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  rmarkdown::html_vignette: default
+  pdf_document: default
+vignette: >
+  %\VignetteIndexEntry{cumulcalib package tutorial}
+  %\usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::knitr}
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=5, fig.height=3
+  ) 
+library(knitr)
+```
+
+
+## Introduction
+
+_cumulcalib_ is an R package for the implementation of the cumulative calibration assessment for risk prediction models. 
+
+If you use this approach for scientific work, please cite the original paper: {Sadatsafavi M, Petkau J, Statistics In Medicine, 2004 (doi: 10.1002/sim.10138)}
+
+In order to use _cumulcalib_ efficiently you should be reasonably familiar with the underlying statistical methodology. Please visit the related publication above (or the arxiv version: https://arxiv.org/abs/2307.09713). 
+
+We illustrate the use of this package, as well as basic interpretations of the cumulative calibration plots, through a running example.
+
+## Setup: A running example based on GUSTO data
+We use data from the GUSTO-I study which is widely used in predictive analytics. These data are available from the _predtools_ package,
+
+
+```{r}
+  library(predtools)
+  data(gusto)
+  set.seed(1)
+```
+
+The outcome is 30-day mortality (we denote it by $y$). We also convert the Killip score, a measure of the severity of heart failure, to a binary variable (cut off >1):
+
+```{r}
+  gusto$y <- gusto$day30
+  gusto$kill <- (as.numeric(gusto$Killip)>1)*1
+```
+  
+We will develope and validate a risk prediction model for 30-day mortality after a heart attack based on these data. To create a semi-realistic scenario, we use the non-US sub-sample of the data for model development and the US sub-sample for model validation, and fit a logistic regression model on the development sample.
+
+```{r}
+  dev_data <- gusto[!gusto$regl %in% c(1, 7, 9, 10, 11, 12, 14, 15),] #The regl variable contains location codes
+  val_data <- gusto[gusto$regl %in% c(1, 7, 9, 10, 11, 12, 14, 15),]
+  model <- glm(y ~ age + miloc + pmi + kill + pmin(sysbp,100) + pulse, data=dev_data, family=binomial(link="logit"))
+```
+
+The prevalence of the outcome in the development and validation samples are, respectively, `r round(mean(dev_data$y),2)` and `r round(mean(val_data$y),2)`. Here are the coefficients of the model:
+
+```{r echo=FALSE}
+  kable(cbind("Coefficients"=summary(model)$coefficients[,1]))
+```
+
+We use this model to predict the outcome in the validation sample:
+```{r}
+  val_data$pi  <- predict(model, type="response", newdata=val_data)
+```
+
+Let's start with the conventional calibration plot for this model, which is an estimate of the average value of the true risk at a given level of predicted risk (using the _calibration_plot_ function of the _predtools_ package):
+
+```{r, fig.width = 4, fig.height = 4}
+  predtools::calibration_plot(val_data, obs="y", pred="pi")
+```
+The model seems to be well calibrated. One issue with such a plot is that it generally requires binning (as done above) or smoothing. This is because predicted risks often have many levels, and within each level of predicted risk only a few, and mostly only one, $y$ is observed. This requirement makes this assessment somewhat subjective: whether to use binning or smoothing. If the former, how many bins? If the latter, which smoothing method, and with which tuning parameter(s)?
+
+
+## Objective assessment of calibration on the cumulative domain
+The cumulative calibration assessment is based on the behavior of standardized partial sum of **prediction errors** (i.e., $y-\pi$, after ordering the data ascendingly on $\pi$). The promise is that if the model is calibrated, the resulting partial sum, after suitable standardization, will converge to the Brownian motion in the [0,1] interval. This approach does not require any regularization.
+
+Details of such standardization is provided in the original publication. In brief, for the convergence to Brownian motion to work, the 'time' jump at step i should be proportional to the variance of $y_i$, which, under the hypothesis that the model is calibrated, is $\pi_i(1-\pi_i)$. 
+
+### Using _cumulcalib_ package for calibration assessment
+To assess cumulative calibration using this approach via the _cumulcalib_ package, we use a simple function call and store the results:
+
+```{r}
+  library(cumulcalib)
+  res <- cumulcalib(val_data$y, val_data$pi) 
+```
+
+Let's explore what type of results this call returns:
+```{r }
+summary(res)
+```
+The following elements are returned:
+
+* $C_n$: sample estimate of mean calibration error ($E(y-\pi)$)
+
+* $C^*$ maximum absolute cumulative prediction error, divided by the number of observations. $C^*$ is a 'distance' metric, similar to metrics such as Emax or the Integrated Calibration Index. 
+
+The other components in the summary depend on the _Method_ requested for inference on model calibration. The default method is the Brownian Bridge test, which returns the following:
+
+* $S_n$: the Z score for mean calibration error, obtained as $\frac{nC_n}{\sqrt{\sum_1^n \pi_i(1-\pi_i)}}$. Note that the denominator is the square-root of total variance if the model is calibrated.
+
+* $B^*$: this is the maximum distance of the random walk from the line that connects its start and end (the bridge line, hence the 'bridge' test). Under the null hypothesis that the model is calibrated, $B^*$ follows the Kolmogorov distribution.
+
+* Component-wise p-values: These are individual p-values for each component of the test. The first one is the Z-test for mean calibration (testing if the average predicted and observed risks are equal). The second one is the test of the deviation of the random walk from the line that connects its origin and end (bridged distance).
+
+* Combined p-value: This is the unified p-value for moderate calibration (based on Fisher's method)
+
+* Location of maximum drift: This provides information about the location that the maximum drift of the random walk occurs (corresponding to $C^*$). The rank of the observation, time, and predictor values at this point are reported.
+
+
+Note: the Brownian bridge test operates by combining two statistic: $C_n$, and maximum absolute deviation of the random walk from the line that connects its origin and end points. The test statistic related to the former is , and $B^*$ for the latter, which has a Kolmogorov distribution under the null hypothesis. Because it can be shown that these two statistics are independent, one combined p-value can be generated using the Fisher's method.
+
+Based on the above results, both mean calibration p-value, and the bridged random walk p-value show that the data are compatible with the model being calibrated in this sample. Indeed, the combined p-value of `r res$pval` also indicated lack of strong evidence against the model being calibrated for the US population.
+
+
+
+### Graphical assessment of calibration using _cumulcalib_ package
+The returning object from the function call can be directly plotted:
+
+```{r}
+  plot(res)
+```
+
+The X axis is the 'time' value (running from 0 to 1). The corresponding predicted values are shown on the second X-axis on top. The default Y axis is the standardized sum (cumulative sum divided by the square root of the sum of variance of predicted risks). The second Y axis provides 'scaled' cumulative sum (divided by the number of observations). This means the terminal value of the random walk can be marked on the second Y-axis axis to identify mean calibration error.
+
+The blue and red vertical lines, respectively, show the terminal value of the random walk and its maximum bridged deviation (given the default method, Brownian bridge, is used). The dotted lines of the same color mark the critical value of the test (by default at 5% significance level, see the documentation for the cumulcalib() function on how to disable inference lines or change significance level).
+
+Here it is obvious that neither the terminal value (mean calibration error) nor the maximum deviation reach statistical significance. 
+
+
+
+## How do different forms of miscalibrations look on the cumulative calibration plot?
+
+The above results present how a calibrated model will look like. Let's test how different forms of miscalibration present themselves on the cumulative calibration graph.
+
+### A model that underestimates the risk
+Let's start with a model that under-estimates the risk. We mimic this by applying an odds-ratio of 0.75 to predicted risks.
+```{r}
+  val_data$pi2 <- val_data$pi*0.75/(1-val_data$pi*(1-0.75)) #One-shot transformation of risk to odds and back
+  res <- cumulcalib(val_data$y, val_data$pi2) 
+  predtools::calibration_plot(val_data, obs="y", pred="pi2")
+  plot(res)
+```
+
+As can be seen above, when predicted risks are systematically smaller than actual risks, prediction errors are generally positive, resulting in a generally ascending curve. Clearly, the Z-test component of the bridge test is rejected at 0.05 level (the corresponding p-value is `r res$pval_by_component[1]`). However, as can bee see by the red markings on the graph, the bridge component is not affected by such systematic error (the corresponding p-value is `r res$pval_by_component[2]`). As the overall p-value for moderate calibration is affected by both, it remains significant (p-value: `r res$pval`). As such, the null hypothesis that the model is moderately calibrated is rejected at 0.05 significance level.
+
+
+### A model that overestimates the risk
+We mimic this by applying an odds-ratio of 1.25 to predicted risks.
+```{r}
+  val_data$pi2 <- val_data$pi*1.25/(1-val_data$pi*(1-1.25)) #One-shot transformation of risk to odds and back
+  res <- cumulcalib(val_data$y, val_data$pi2) 
+  predtools::calibration_plot(val_data, obs="y", pred="pi2")
+  plot(res)
+```
+
+Here, the opposite happens: when predicted risks are systematically larger than actual risks, prediction errors are generally negative, resulting in a generally descending curve. Again, the Z-test component of the bridge test is rejected at 0.05 level (the corresponding p-value is `r res$pval_by_component[1]`), but the bridge component is not affected by such systematic error (the corresponding p-value is `r res$pval_by_component[2]`). Again, as the overall p-value for moderate calibration is affected by both, it remains significant (p-value: `r res$pval`). As such, the null hypothesis that the model is moderately calibrated is rejected at 0.05 significance level.
+
+
+
+### Over-fittedd model
+To demonstrate how an over-fitted model might look, we refit the model based on only a sub-sample of 500 rows from the development sample. The intuition is that because of the small development sample, the model might not be calibrated. In particular, it might be over-fitted.
+
+```{r}
+  dev_data2 <- dev_data[sample(nrow(dev_data), 500, replace=F),]
+  model2 <- glm(y ~ age + miloc + pmi + kill + pmin(sysbp,100) + pulse, data=dev_data2, family=binomial(link="logit"))
+  val_data$pi2  <- predict(model2, type="response", newdata=val_data)
+```
+
+Let's look at the calibration plot
+```{r}
+  predtools::calibration_plot(val_data, obs="y", pred="pi2")
+```
+
+The model is indeed not as well calibrated as the model based on the full development sample. Let's repeat the cumulative calibration exercise
+  
+```{r}
+  res2 <- cumulcalib(val_data$y, val_data$pi2)
+  summary(res2)
+  plot(res2)
+```
+
+Here, despite the fact that average predicted risks are close to the average actual risks (notice the terminal position of the random walk), miscalibration is quite obvious: the model seems to be making under-estimated risks at low values (the increasing trend of cumulative prediction error), followed by overestimating the risk later (the declining curve). This inverse U shape is a typical signature of an over-fitted model. 
+
+If we repeat the similar steps for inference, we will obtain the following p-values: `r res2$pval_by_component[1]` for mean miscalibration, `r res2$pval_by_component[2]` for the bridge component, and `r res2$pval` for the unified test. Unlike models that systematically under-predict or over-predict the risk, here it is the bridge component of the test that catches the miscalibration. 
+
+

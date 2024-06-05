@@ -1,0 +1,12 @@
+^cumulcalib\.Rproj$
+^\.Rproj\.user$
+^doc$
+^Meta$
+^\.github$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^LICENSE\.md$
+^CRAN-SUBMISSION$
+^cran-comments\.md$
