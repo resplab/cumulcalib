@@ -5,7 +5,6 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/msadatsafavi/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/msadatsafavi/cumulcalib/actions/workflows/R-CMD-check.yaml)
 [![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 

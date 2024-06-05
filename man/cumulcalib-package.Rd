@@ -4,7 +4,7 @@
 \name{cumulcalib-package}
 \alias{cumulcalib-package}
 \alias{_PACKAGE}
-\title{cumulcalib: Cumulative Calibration Assessment For Prediction Models}
+\title{cumulcalib: Cumulative Calibration Assessment for Prediction Models}
 \description{
 Tools for visualization of, and inference on, the calibration of prediction models on the cumulative calibration domain.
 }

@@ -50,7 +50,7 @@ The outcome is 30-day mortality (we denote it by $y$). We also convert the Killi
   gusto$kill <- (as.numeric(gusto$Killip)>1)*1
 ```
   
-We will develope and validate a risk prediction model for 30-day mortality after a heart attack based on these data. To create a semi-realistic scenario, we use the non-US sub-sample of the data for model development and the US sub-sample for model validation, and fit a logistic regression model on the development sample.
+We will develop and validate a risk prediction model for 30-day mortality after a heart attack based on these data. To create a semi-realistic scenario, we use the non-US sub-sample of the data for model development and the US sub-sample for model validation, and fit a logistic regression model on the development sample.
 
 ```{r}
   dev_data <- gusto[!gusto$regl %in% c(1, 7, 9, 10, 11, 12, 14, 15),] #The regl variable contains location codes
