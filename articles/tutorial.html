@@ -120,7 +120,7 @@ measure of the severity of heart failure, to a binary variable (cut off
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">gusto</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">gusto</span><span class="op">$</span><span class="va">day30</span></span>
 <span>  <span class="va">gusto</span><span class="op">$</span><span class="va">kill</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">gusto</span><span class="op">$</span><span class="va">Killip</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="fl">1</span></span></code></pre></div>
-<p>We will develope and validate a risk prediction model for 30-day
+<p>We will develop and validate a risk prediction model for 30-day
 mortality after a heart attack based on these data. To create a
 semi-realistic scenario, we use the non-US sub-sample of the data for
 model development and the US sub-sample for model validation, and fit a
