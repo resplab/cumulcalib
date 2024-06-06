@@ -16,7 +16,7 @@
 #' summary(res)
 #' plot(res)
 #' @export
-cumulcalib <- function(y, p, method=c("BB","BM"), ordered=F, n_sim=0)
+cumulcalib <- function(y, p, method=c("BB","BM"), ordered=FALSE, n_sim=0)
 {
   out <- list()
   methods <- list()
@@ -292,8 +292,11 @@ plot.cumulcalib <- function(x,...)
 #' @param y2axis If true, draws a second y-axis (on right) showing scaled partial sums
 #' @param ... Parameters to be passed to plot()
 #' @method plot cumulcalib
-plot.cumulcalib <- function(x, method=NULL, draw_stat=T, stat_col=c('blue','red'), draw_sig=T, sig_level=c(0.95,0.95), x2axis=T, y2axis=T, ...)
+plot.cumulcalib <- function(x, method=NULL, draw_stat=TRUE, stat_col=c('blue','red'), draw_sig=TRUE, sig_level=c(0.95,0.95), x2axis=TRUE, y2axis=TRUE, ...)
 {
+  oldpar <- par(no.readonly=TRUE)
+  on.exit(par(oldpar))
+
   args <- list(...)
   if(is.null(method))
   {

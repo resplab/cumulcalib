@@ -7,24 +7,24 @@
 \method{plot}{cumulcalib}(
   x,
   method = NULL,
-  draw_stat = T,
+  draw_stat = TRUE,
   stat_col = c("blue", "red"),
-  draw_sig = T,
+  draw_sig = TRUE,
   sig_level = c(0.95, 0.95),
-  x2axis = T,
-  y2axis = T,
+  x2axis = TRUE,
+  y2axis = TRUE,
   ...
 )
 
 \method{plot}{cumulcalib}(
   x,
   method = NULL,
-  draw_stat = T,
+  draw_stat = TRUE,
   stat_col = c("blue", "red"),
-  draw_sig = T,
+  draw_sig = TRUE,
   sig_level = c(0.95, 0.95),
-  x2axis = T,
-  y2axis = T,
+  x2axis = TRUE,
+  y2axis = TRUE,
   ...
 )
 }

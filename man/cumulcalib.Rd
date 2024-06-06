@@ -4,7 +4,7 @@
 \alias{cumulcalib}
 \title{Cumulative calibration assessment}
 \usage{
-cumulcalib(y, p, method = c("BB", "BM"), ordered = F, n_sim = 0)
+cumulcalib(y, p, method = c("BB", "BM"), ordered = FALSE, n_sim = 0)
 }
 \arguments{
 \item{y}{vector of binary responses}
