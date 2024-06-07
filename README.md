@@ -6,8 +6,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/resplab/cumulcalib/branch/main/graph/badge.svg)](https://app.codecov.io/gh/resplab/cumulcalib?branch=main)
 <!-- badges: end -->
 
 The goal of cumulcalib is to enable the use of the assessment of
