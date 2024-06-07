@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/resplab/cumulcalib/branch/main/graph/badge.svg)](https://app.codecov.io/gh/resplab/cumulcalib?branch=main)
 <!-- badges: end -->
 
 The goal of cumulcalib is to enable the use of the assessment of
@@ -49,6 +51,9 @@ summary(res)
 #> Component-wise p-values: mean calibration=0.624632509005787 | Distance (bridged)=0.385979705481866
 #> Combined p-value (Fisher's method): 0.584068794836004
 #> Location of maximum drift: 812  | time value: 0.632911942275094  | predictor value: 0.28191196504736
+```
+
+``` r
 plot(res, draw_sig=F)
 ```
 
