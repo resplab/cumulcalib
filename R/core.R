@@ -300,23 +300,18 @@ plot.cumulcalib <- function(x, method=NULL, draw_stat=TRUE, stat_col=c('blue','r
   }
   else
   {
+    if(length(method)>1)
+    {
+      stop("Only one method can be equested.")
+    }
     if(!(method %in% names(x$by_method)))
-      stop("The requested method has not been requested in the original cumulcalib() call")
+      stop(paste("The requested method has not been provided by the original cumulcalib() call. You asked for", method, "but the submitted object has method(s)", paste(names(x$by_method),collapse=",")))
   }
 
   oldpar <- par(no.readonly=TRUE)
   on.exit(par(oldpar))
 
   args <- list(...)
-  if(is.null(method))
-  {
-    method <- x$method
-  }
-  else
-  {
-    if(!("BM" %in% names(x$by_method)))
-       stop("The requested method has not been requested in the original cumulcalib() call")
-  }
 
   t_ <- x$data[,'t']
   X <- x$data[,'X']
@@ -479,8 +474,12 @@ summary.cumulcalib <- function(object, method=NULL, ...)
   }
   else
   {
+    if(length(method)>1)
+    {
+      stop("Only one method can be equested.")
+    }
     if(!(method %in% names(object$by_method)))
-      stop("The requested method has not been requested in the original cumulcalib() call")
+      stop(paste("The requested method has not been provided by the original cumulcalib() call. You asked for", method, "but the submitted object has method(s)", paste(names(object$by_method),collapse=",")))
   }
 
   n <- dim(object$data)[1]
