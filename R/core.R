@@ -294,6 +294,11 @@ plot.cumulcalib <- function(x,...)
 #' @method plot cumulcalib
 plot.cumulcalib <- function(x, method=NULL, draw_stat=TRUE, stat_col=c('blue','red'), draw_sig=TRUE, sig_level=c(0.95,0.95), x2axis=TRUE, y2axis=TRUE, ...)
 {
+  if(!(method %in% names(x$by_method)))
+  {
+    stop("Error: the requested method for plot() was not provided in the submitted cumulcalib object.")
+  }
+
   oldpar <- par(no.readonly=TRUE)
   on.exit(par(oldpar))
 
@@ -311,16 +316,19 @@ plot.cumulcalib <- function(x, method=NULL, draw_stat=TRUE, stat_col=c('blue','r
   t_ <- x$data[,'t']
   X <- x$data[,'X']
   W <- x$data[,'S']
-
   n <- length(W)
+  loc <- x$by_method[[method]]$loc
 
   sign_p1 <- sign(W[n])
-  sign_p2 <- sign(W[x$by_method[[method]]$loc])
-
-  if(method=="BCI1p") #The only method that messes with S when drawing it.
+  if(method %in% c("BB","BB1p","BB2p"))
   {
-    W<-W-t_*W[n]
+    sign_p2 <- sign(W[loc]-t_[loc]*W[n])
   }
+  else
+  {
+    sign_p2 <- sign(W[loc])
+  }
+
 
   sig_p1 <- sig_p2 <- 0 #0 indicates do not draw signifcance lines
   if(draw_sig)
@@ -423,18 +431,11 @@ plot.cumulcalib <- function(x, method=NULL, draw_stat=TRUE, stat_col=c('blue','r
   }
 
   #P2 lines
-  loc <- x$by_method[[method]]$loc
   if(method %in% c('BB')) #If 2p bridge test then adjust the length of the red line and draw the bridge line
   {
-    if(draw_stat) lines(c(0,1),c(0,W[n]),col="gray", lty=2)
+    lines(c(0,1),c(0,W[n]),col="gray", lty=2)
     if(draw_stat) lines(c(t_[loc],t_[loc]),c(t_[loc]/t_[n]*W[n],W[loc]),col=stat_col[2])
     if(draw_sig) lines(c(0,1),c(sign_p2*sig_p2,sign_p2*sig_p2+W[n]),col=stat_col[2],lty=3)
-  }
-  else if(method %in% c('BCI1p'))
-  {
-    lines(c(0,1),c(0,W[n]),col="gray")
-    if(draw_stat) lines(c(t_[loc],t_[loc]),c(0,W[loc]),col=stat_col[2])
-    if(draw_sig) lines(c(0,1),c(sign_p2*sig_p2,sign_p2*sig_p2),col=stat_col[2],lty=3)
   }
   else #BM or BM2p
   {
