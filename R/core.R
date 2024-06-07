@@ -294,9 +294,14 @@ plot.cumulcalib <- function(x,...)
 #' @method plot cumulcalib
 plot.cumulcalib <- function(x, method=NULL, draw_stat=TRUE, stat_col=c('blue','red'), draw_sig=TRUE, sig_level=c(0.95,0.95), x2axis=TRUE, y2axis=TRUE, ...)
 {
-  if(!(method %in% names(x$by_method)))
+  if(is.null(method))
   {
-    stop("Error: the requested method for plot() was not provided in the submitted cumulcalib object.")
+    method <- x$method
+  }
+  else
+  {
+    if(!(method %in% names(x$by_method)))
+      stop("The requested method has not been requested in the original cumulcalib() call")
   }
 
   oldpar <- par(no.readonly=TRUE)
@@ -474,7 +479,7 @@ summary.cumulcalib <- function(object, method=NULL, ...)
   }
   else
   {
-    if(!("BM" %in% names(object$by_method)))
+    if(!(method %in% names(object$by_method)))
       stop("The requested method has not been requested in the original cumulcalib() call")
   }
 
