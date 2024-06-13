@@ -4,7 +4,7 @@ Comment: "The Description field is intended to be a (one paragraph) description 
 quotes: "Title")
 
 
-Response: Description field is now updated, with the publication added. NOTE: the publication is in production. The doi is valid but will be made available once the paper is published.
+Response: Description field is now updated, with the publication added. 
 
 
 Comment: Please write TRUE and FALSE instead of T and F. Please don't use "T" or "F" as vector names.
