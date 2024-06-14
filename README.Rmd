@@ -28,7 +28,12 @@ vignette("tutorial", package="cumulcalib")
 
 ## Installation
 
-You can install the development version of cumulcalib from [GitHub](https://github.com/) with:
+The package is available in CRAN and can be installed as such:
+
+``` r
+install.packages("cumulcalib")
+```
+You can install the *development* version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes") #this package is necessary to connect to github

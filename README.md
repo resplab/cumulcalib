@@ -21,7 +21,13 @@ vignette("tutorial", package="cumulcalib")
 
 ## Installation
 
-You can install the development version of cumulcalib from
+The package is available in CRAN and can be installed as such:
+
+``` r
+install.packages("cumulcalib")
+```
+
+You can install the *development* version of cumulcalib from
 [GitHub](https://github.com/) with:
 
 ``` r
