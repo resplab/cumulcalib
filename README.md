@@ -11,9 +11,9 @@
 The goal of cumulcalib is to enable the use of the assessment of
 prediction model calibration using the cumulative calibration
 methodology. For more information, please refer to the original
-publication (arxiv version: <https://arxiv.org/abs/2307.09713>). The
-package also comes with a tutorial, which you can view after installing
-the package as
+publication (<https://doi.org/10.1002/sim.10138>). The package also
+comes with a tutorial, which you can view after installing the package
+as
 
 ``` r
 vignette("tutorial", package="cumulcalib")
@@ -21,13 +21,13 @@ vignette("tutorial", package="cumulcalib")
 
 ## Installation
 
-The package is available in CRAN and can be installed as such:
+The package can be installed from CRAN:
 
 ``` r
 install.packages("cumulcalib")
 ```
 
-You can install the *development* version of cumulcalib from
+You can also install the *development* version from
 [GitHub](https://github.com/) with:
 
 ``` r
