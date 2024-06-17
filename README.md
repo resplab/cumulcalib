@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of cumulcalib is to enable the use of the assessment of
+The goal of cumulcalib is to enable the assessment of
 prediction model calibration using the cumulative calibration
 methodology. For more information, please refer to the original
 publication (<https://doi.org/10.1002/sim.10138>). The package also
