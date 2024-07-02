@@ -12,14 +12,14 @@ The goal of cumulcalib is to enable the assessment of
 prediction model calibration using the cumulative calibration
 methodology. For more information, please refer to the original
 publication (<https://doi.org/10.1002/sim.10138>). The package also
-comes with a tutorial, which you can view after installing the package
+comes with a [tutorial, which you can access on CRAN](https://cran.r-project.org/web/packages/cumulcalib/vignettes/tutorial.html) or view after installing the package
 as
 
 ``` r
 vignette("tutorial", package="cumulcalib")
 ```
 
-or directly on [CRAN](https://cran.r-project.org/web/packages/cumulcalib/vignettes/tutorial.html). 
+
 
 ## Installation
 
