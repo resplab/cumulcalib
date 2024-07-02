@@ -19,6 +19,8 @@ as
 vignette("tutorial", package="cumulcalib")
 ```
 
+or directly on [CRAN](https://cran.r-project.org/web/packages/cumulcalib/vignettes/tutorial.html). 
+
 ## Installation
 
 The package can be installed from CRAN:
