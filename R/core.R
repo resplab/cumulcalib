@@ -18,9 +18,6 @@
 #' @export
 cumulcalib <- function(y, p, method=c("BB","BM"), ordered=FALSE, n_sim=0)
 {
-  out <- list()
-  methods <- list()
-
   if(!ordered) #Order ascendingly based on p, if not already ordered
   {
     o <- order(p)
@@ -44,11 +41,98 @@ cumulcalib <- function(y, p, method=c("BB","BM"), ordered=FALSE, n_sim=0)
   #This is the S process as described in the paper. The function returns all these metrics regardless of which method is used. But inference is only done per specified method(s)
   scale <- n/sqrt(T_)
   S <- scale*C
-  S_star <- scale*C_star
-  B_star <- max(abs(S-S[n]*t))
-  S_n <- scale*C_n
+
+  out <- inference(t, S, method)
+
+  out$data <- cbind(X=X,t=t,C=C,S=S) #Returns the generated random-walk
+  class(out) <- c("cumulcalib")
+  return(out)
+}
+
+
+
+
+
+#' Cumulative calibration assessment
+#'
+#' This is the core function for performing cumulative calibration assessment
+#'
+#' @return an objective of class cumulcalib that can be printed or plotted
+#  @seealso [stringi::stri_length()] which this function wraps.
+#' @param y vector of binary responses
+#' @param p vector of predicted probabilities.
+#' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
+#' @param ordered if TRUE, y and p are already ordered based on ascending values of p. This is to speed up simulations.
+#' @param n_sim if >0, indicates a simulation-based test is requested for inference.
+#' @examples
+#' pi <- rbeta(1000,1,2)
+#' Y <- rbinom(length(pi),1,pi)
+#' res <- cumulcalib(Y, pi, method="BB")
+#' summary(res)
+#' plot(res)
+#' @export
+cumulcalibB <- function(y, h, a, p=NULL, method=c("BB","BM"), ordered=FALSE, n_sim=0)
+{
+  if(!ordered) #Order ascendingly based on p, if not already ordered
+  {
+    o <- order(p)
+    h <- h[o]
+    y <- y[o]
+    a <- a[o]
+    if(!is.null(p)) p <- p[o]
+  }
+
+  n <- length(y)
+  k <- 1:n
+  k1 <- cumsum(df$t)
+  k0 <- k-k1
+  k0[which(k0==0)]<-1
+  k1[which(k1==0)]<-1
+  Y1 <- cumsum(df$Y)
+  Y01 <- cumsum((1-df$t)*df$Y)
+  Y11 <- cumsum(df$t*df$Y)
+  C <- k*(Y01/k0-Y11/k1)
+
+  if(!is.null(p))
+  {
+    X <- c(0,C[-1]-C[-n])
+    X_mu <- k*((1-df$t)*(df$Y-df$p0)/k0-df$t*(df$Y-df$p0+df$h)/k1)
+    sigma2 <- k^2*((1-df$t)*df$p0*(1-df$p0)/k0^2 + df$t*(df$p0-df$h)*(1-df$p0+df$h)/k1^2)
+    s2 <- cumsum(sigma2)
+  }
+  else
+  {
+    mu <- df$h
+    s2 <- k^2*(Y01/k0*(1-Y01/k0)/k0+Y11/k1*(1-Y11/k1)/k1)
+  }
+
+  #The time component of the random walk
+  T_ <- s2[n] #Total 'time'
+  if(T_<30) warning("Total obsered time (sum(pi*(1-pi))) is less than 30; the data might be too small for reliable inference.")
+  t <- s2/s2_n
+  S <- (C-cumsum(mu))/sqrt(T_)
 
   #Inference part. We loop over the different methods requested by the user
+  X <- h #Predicted values
+  out <- inference(t, S, method)
+
+  class(out) <- c("cumulcalib", "cumulcaliB")
+  return(out)
+}
+
+
+
+
+inference <- function(t, S, method)
+{
+  out <- list()
+  methods <- list()
+  n <- length(S)
+
+  S_star <- max(abs(S))
+  B_star <- max(abs(S-S[n]*t))
+  S_n <- S[n]
+
   for(i in 1:length(method))
   {
     mt <- method[i]
@@ -105,27 +189,17 @@ cumulcalib <- function(y, p, method=c("BB","BM"), ordered=FALSE, n_sim=0)
     }
   }
 
-  out$data <- cbind(X=X,t=t,C=C, S=S) #Returns the generated random-walk
   out$method <- names(methods[1]) #The base method is the first requested one
-
-  out$scale <- scale
-  out$C_n <- C_n
   out$S_n <- S_n
-  out$C_star <- C_star
   out$S_star <- S_star
   out$B_star <- B_star
-
   #Copy the first method results to root of the list
   for(nm in names(methods[[1]]))
   {
     out[nm] <- methods[[1]][nm]
   }
   out$by_method <- methods
-
-  class(out) <- "cumulcalib"
-  return(out)
 }
-
 
 
 
@@ -492,8 +566,8 @@ summary.cumulcalib <- function(object, method=NULL, ...)
     writeLines(paste("S* (test statistic for cumulative calibration error):",object$S_star))
     writeLines(paste("p-value:",object$by_method$BM$pval))
     writeLines(paste("Location of maximum drift:",object$by_method$BM$loc,
-                " | time value:", object$data[object$by_method$BM$loc,'t'],
-                " | predictor value:", object$data[object$by_method$BM$loc,'X']))
+                     " | time value:", object$data[object$by_method$BM$loc,'t'],
+                     " | predictor value:", object$data[object$by_method$BM$loc,'X']))
   }
   if(method=="BM2p")
   {
@@ -504,8 +578,8 @@ summary.cumulcalib <- function(object, method=NULL, ...)
     writeLines(object$by_method$BM2p$pval_by_component)
     writeLines(paste("Combined p-value (Fisher's method):",object$by_method$BM2p$pval))
     writeLines(paste("Location of maximum drift:",object$by_method$BM2p$loc,
-                " | time value:", object$data[object$by_method$BM2p$loc,'t'],
-                " | predictor value:", object$data[object$by_method$BM2p$loc,'X']))
+                     " | time value:", object$data[object$by_method$BM2p$loc,'t'],
+                     " | predictor value:", object$data[object$by_method$BM2p$loc,'X']))
   }
   if(method=="BB1p")
   {
@@ -514,8 +588,8 @@ summary.cumulcalib <- function(object, method=NULL, ...)
     writeLines(paste("Test statistic value:",object$by_method$BB1p$stat))
     writeLines(paste("p-value:",object$by_method$BB1p$pval))
     writeLines(paste("Location of maximum drift:",object$by_method$BB1p$loc,
-                " | time value:", object$data[object$by_method$BB1p$loc,'t'],
-                " | predictor value:", object$data[object$by_method$BB1p$loc,'X']))
+                     " | time value:", object$data[object$by_method$BB1p$loc,'t'],
+                     " | predictor value:", object$data[object$by_method$BB1p$loc,'X']))
   }
   if(method=="BB" || method=="BB2p")
   {
@@ -525,8 +599,8 @@ summary.cumulcalib <- function(object, method=NULL, ...)
     writeLines(paste0("Component-wise p-values: mean calibration=", object$by_method$BB$pval_by_component[1], " | Distance (bridged)=", object$by_method$BB$pval_by_component[2]))
     writeLines(paste("Combined p-value (Fisher's method):",object$by_method$BB$pval))
     writeLines(paste("Location of maximum drift:",object$by_method$BB$loc,
-                " | time value:", object$data[object$by_method$BB$loc,'t'],
-                " | predictor value:", object$data[object$by_method$BB$loc,'X']))
+                     " | time value:", object$data[object$by_method$BB$loc,'t'],
+                     " | predictor value:", object$data[object$by_method$BB$loc,'X']))
   }
 }
 
