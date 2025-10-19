@@ -85,7 +85,8 @@ cumulcalibB <- function(
   p = NULL,
   method = c("BB", "BM"),
   ordered = FALSE,
-  n_sim = 0
+  n_sim = 0,
+  aux = FALSE
 ) {
   if (!ordered) {
     #Order ascendingly based on Y, if not already ordered
@@ -100,19 +101,12 @@ cumulcalibB <- function(
   k <- 1:n
   k1 <- cumsum(a)
   k0 <- k - k1
-  # k0[which(k0==0)]<-1
-  # k1[which(k1==0)]<-1
   Y1 <- cumsum(y)
   Y01 <- cumsum((1 - a) * y)
   Y11 <- cumsum(a * y)
   B <- k * (ifelse(k0 != 0, Y01 / k0, 0) - ifelse(k1 != 0, Y11 / k1, 0))
 
   if (!is.null(p)) {
-    # X <- c(0,C[-1]-C[-n])
-    # mu=ifelse(a,
-    #          c(0,Y01[-n])/c(0,k0[-n])-k*(c(0,Y11[-n])+(p-h))/k1+(k-1)*c(0,Y11[-n])/(c(0,k1[-n])),
-    #          (1-a)*(k*(c(0,Y01[-n])+p)/k0-(k-1)*c(0,Y01[-n])/c(0,k0[-n])-c(0,Y11[-n])/c(0,k1[-n])))
-    # mu[which(is.nan(mu))] <- 0
     X_mu <- k *
       ((1 - a) *
         ifelse(k0 != 0, (y - p) / k0, 0) -
@@ -123,11 +117,28 @@ cumulcalibB <- function(
         ifelse(k0 != 0, p * (1 - p) / k0^2, 0) +
         a * ifelse(k1 != 0, (p - h) * (1 - p + h) / k1^2, 0))
     s2 <- cumsum(sigma2)
+    if (aux) {
+      mu <- ifelse(
+        a,
+        c(0, Y01[-n]) /
+          c(0, k0[-n]) -
+          k * (c(0, Y11[-n]) + (p - h)) / k1 +
+          (k - 1) * c(0, Y11[-n]) / (c(0, k1[-n])),
+        (1 - a) *
+          (k *
+            (c(0, Y01[-n]) + p) /
+            k0 -
+            (k - 1) * c(0, Y01[-n]) / c(0, k0[-n]) -
+            c(0, Y11[-n]) / c(0, k1[-n]))
+      )
+      mu[which(is.nan(mu))] <- 0
+    }
   } else {
     C <- (B - cumsum(h)) / n
     s2 <- k^2 *
       (ifelse(k0 != 0, Y01 / k0 * (1 - Y01 / k0) / k0, 0) +
         ifelse(k1 != 0, Y11 / k1 * (1 - Y11 / k1) / k1, 0))
+    if (aux) mu <- h
   }
 
   #The time component of the random walk
@@ -146,6 +157,12 @@ cumulcalibB <- function(
   out$C_n <- C[n] #Mean calibration error
   out$C_star <- max(abs(C)) #Maximum distance
   out$data <- cbind(t = t, S = S, B = B, X = h) #Returns the generated random-walk
+
+  if (aux) {
+    out$aux$mu <- mu
+    out$aux$s2 <- s2
+  }
+
   class(out) <- c("cumulcalib", "cumulcaliB")
   return(out)
 }

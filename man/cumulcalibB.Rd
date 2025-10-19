@@ -2,7 +2,7 @@
 % Please edit documentation in R/core.R
 \name{cumulcalibB}
 \alias{cumulcalibB}
-\title{Cumulative calibration assessment}
+\title{Cumulative calibration assessment for treatment benefit predictors}
 \usage{
 cumulcalibB(
   y,
@@ -11,7 +11,8 @@ cumulcalibB(
   p = NULL,
   method = c("BB", "BM"),
   ordered = FALSE,
-  n_sim = 0
+  n_sim = 0,
+  aux = FALSE
 )
 }
 \arguments{
@@ -29,7 +30,7 @@ cumulcalibB(
 an objective of class cumulcalib that can be printed or plotted
 }
 \description{
-This is the core function for performing cumulative calibration assessment
+This is the core function for performing cumulative calibration assessment for models for treatment benefit
 }
 \examples{
 pi <- rbeta(1000,1,2)
