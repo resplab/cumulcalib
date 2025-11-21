@@ -186,7 +186,7 @@ inference <- function(t, S, method) {
       pval1 <- 2 * stats::pnorm(-abs(S[n]), 0, 1) #Two-sided z test for mean calibration
 
       if (mt == 'BB') {
-        loc <- which.max(S - S[n] * t) #The bridge component of the BB test
+        loc <- which.max(abs(S - S[n] * t)) #The bridge component of the BB test
         stat2 <- B_star
         pval2 <- 1 - pKolmogorov(stat2)
       } else {
@@ -537,8 +537,9 @@ plot.cumulcalib <- function(
   }
 
   if (y2axis) {
-    y2p <- pretty(args$ylim / x$scale)
-    axis(side = 4, at = y2p * x$scale, labels = y2p, padj = 0)
+    scale <- n / sqrt(x$T)
+    y2p <- pretty(args$ylim / scale)
+    axis(side = 4, at = y2p * scale, labels = y2p, padj = 0)
     mtext('Scaled cumulative sum', 4, line = 2)
   }
 
