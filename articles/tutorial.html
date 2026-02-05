@@ -82,7 +82,7 @@ assessment and the cumulcalib package</h1>
                         <h4 data-toc-skip class="author">Mohsen
 Sadatsafavi</h4>
             
-            <h4 data-toc-skip class="date">2026-02-04</h4>
+            <h4 data-toc-skip class="date">2026-02-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/resplab/cumulcalib/blob/main/vignettes/tutorial.Rmd" class="external-link"><code>vignettes/tutorial.Rmd</code></a></small>
       <div class="hidden name"><code>tutorial.Rmd</code></div>
@@ -227,13 +227,13 @@ results:</p>
 <p>Let’s explore what type of results this call returns:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
-<span><span class="co">#&gt; C_n (mean calibration error): -0.00156276638623392</span></span>
-<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00200906446334086</span></span>
+<span><span class="co">#&gt; C_n (mean calibration error): -0.0015627663862339</span></span>
+<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00200906446334084</span></span>
 <span><span class="co">#&gt; Method: Two-part Brownian Bridge (BB)</span></span>
-<span><span class="co">#&gt; S_n (Z score for mean calibration error) -1.00908104947663</span></span>
-<span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 1.02844827843834</span></span>
-<span><span class="co">#&gt; Component-wise p-values: mean calibration=0.312935765573658 | Distance (bridged)=0.240744428186203</span></span>
-<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.270143602791048</span></span>
+<span><span class="co">#&gt; S_n (Z score for mean calibration error) -1.00908104947661</span></span>
+<span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 1.02844827843833</span></span>
+<span><span class="co">#&gt; Component-wise p-values: mean calibration=0.312935765573665 | Distance (bridged)=0.240744428186207</span></span>
+<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.270143602791056</span></span>
 <span><span class="co">#&gt; Location of maximum drift: 14657  | time value: 0.262527774654297  | predictor value: 0.0556592074702229</span></span></code></pre></div>
 <p>The following elements are returned:</p>
 <ul>
@@ -397,13 +397,13 @@ exercise</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cumulcalib.html">cumulcalib</a></span><span class="op">(</span><span class="va">val_data</span><span class="op">$</span><span class="va">y</span>, <span class="va">val_data</span><span class="op">$</span><span class="va">pi2</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; C_n (mean calibration error): 0.000155141189373079</span></span>
-<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00834106759839255</span></span>
+<span><span class="co">#&gt; C_n (mean calibration error): 0.000155141189373162</span></span>
+<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00834106759839258</span></span>
 <span><span class="co">#&gt; Method: Two-part Brownian Bridge (BB)</span></span>
-<span><span class="co">#&gt; S_n (Z score for mean calibration error) 0.106201501405192</span></span>
+<span><span class="co">#&gt; S_n (Z score for mean calibration error) 0.106201501405249</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 5.66522040991455</span></span>
-<span><span class="co">#&gt; Component-wise p-values: mean calibration=0.915422479736199 | Distance (bridged)=2.22044604925031e-16</span></span>
-<span><span class="co">#&gt; Combined p-value (Fisher's method): 7.54951656745106e-15</span></span>
+<span><span class="co">#&gt; Component-wise p-values: mean calibration=0.915422479736154 | Distance (bridged)=0</span></span>
+<span><span class="co">#&gt; Combined p-value (Fisher's method): 0</span></span>
 <span><span class="co">#&gt; Location of maximum drift: 18992  | time value: 0.420294629063075  | predictor value: 0.106004714711078</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="480"></p>
@@ -415,11 +415,10 @@ prediction error), followed by overestimating the risk later (the
 declining curve). This inverse U shape is a typical signature of an
 over-fitted model.</p>
 <p>If we repeat the similar steps for inference, we will obtain the
-following p-values: 0.9154225 for mean miscalibration, 2.220446^{-16}
-for the bridge component, and 7.5495166^{-15} for the unified test.
-Unlike models that systematically under-predict or over-predict the
-risk, here it is the bridge component of the test that catches the
-miscalibration.</p>
+following p-values: 0.9154225 for mean miscalibration, 0 for the bridge
+component, and 0 for the unified test. Unlike models that systematically
+under-predict or over-predict the risk, here it is the bridge component
+of the test that catches the miscalibration.</p>
 </div>
 </div>
   </div>
