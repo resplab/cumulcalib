@@ -8,18 +8,16 @@
 [![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of cumulcalib is to enable the assessment of
+The goal of cumulcalib is to enable the use of the assessment of
 prediction model calibration using the cumulative calibration
 methodology. For more information, please refer to the original
 publication (<https://doi.org/10.1002/sim.10138>). The package also
-comes with a [tutorial, which you can access on CRAN](https://cran.r-project.org/web/packages/cumulcalib/vignettes/tutorial.html) or view after installing the package
+comes with a tutorial, which you can view after installing the package
 as
 
 ``` r
 vignette("tutorial", package="cumulcalib")
 ```
-
-
 
 ## Installation
 
@@ -56,10 +54,7 @@ summary(res)
 #> B* (test statistic for maximum absolute bridged calibration error): 0.904915434767163
 #> Component-wise p-values: mean calibration=0.624632509005787 | Distance (bridged)=0.385979705481866
 #> Combined p-value (Fisher's method): 0.584068794836004
-#> Location of maximum drift: 812  | time value: 0.632911942275094  | predictor value: 0.28191196504736
-```
-
-``` r
+#> Location of maximum drift: 701  | time value: 0.457280572542993  | predictor value: 0.217915058214255
 plot(res, draw_sig=F)
 ```
 
