@@ -7,3 +7,4 @@
 
 # rendered vignettes (build artifacts)
 vignettes/*.html
+/README.html
