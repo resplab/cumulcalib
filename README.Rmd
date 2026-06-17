@@ -39,11 +39,11 @@ The package can be installed from CRAN:
 ``` r
 install.packages("cumulcalib")
 ```
-You can also install the *development* version from [GitHub](https://github.com/) with:
+You can also install the *development* version, including the individualized treatment effect (ITE) functionality, from the `cumulcalibITE` branch on [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes") #this package is necessary to connect to github
-remotes::install_github("resplab/cumulcalib")
+remotes::install_github("resplab/cumulcalib@cumulcalibITE")
 ```
 
 ## Example
