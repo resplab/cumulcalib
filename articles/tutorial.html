@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9000</span>
       </span>
     </div>
 
@@ -50,6 +50,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/tutorial.html">A tutorial on the cumulative calibration assessment and the cumulcalib package</a>
+    </li>
+    <li>
+      <a href="../articles/tutorialITE.html">Assessing moderate calibration of individualized treatment effects with cumulcalibITE</a>
     </li>
   </ul>
 </li>
@@ -82,9 +85,9 @@ assessment and the cumulcalib package</h1>
                         <h4 data-toc-skip class="author">Mohsen
 Sadatsafavi</h4>
             
-            <h4 data-toc-skip class="date">2026-02-05</h4>
+            <h4 data-toc-skip class="date">2026-06-17</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/resplab/cumulcalib/blob/main/vignettes/tutorial.Rmd" class="external-link"><code>vignettes/tutorial.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/resplab/cumulcalib/blob/cumulcalibITE/vignettes/tutorial.Rmd" class="external-link"><code>vignettes/tutorial.Rmd</code></a></small>
       <div class="hidden name"><code>tutorial.Rmd</code></div>
 
     </div>
@@ -214,7 +217,7 @@ publication. In brief, for the convergence to Brownian motion to work,
 the ‘time’ jump at step i should be proportional to the variance of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>,
 which, under the hypothesis that the model is calibrated, is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_i(1-\pi_i)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\pi_i(1-\pi_i)</annotation></semantics></math>.</p>
 <div class="section level3">
 <h3 id="using-cumulcalib-package-for-calibration-assessment">Using <em>cumulcalib</em> package for calibration assessment<a class="anchor" aria-label="anchor" href="#using-cumulcalib-package-for-calibration-assessment"></a>
 </h3>
@@ -227,19 +230,20 @@ results:</p>
 <p>Let’s explore what type of results this call returns:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Moderate calibration assessment of predicted risks</span></span>
 <span><span class="co">#&gt; C_n (mean calibration error): -0.0015627663862339</span></span>
 <span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00200906446334084</span></span>
-<span><span class="co">#&gt; Method: Two-part Brownian Bridge (BB)</span></span>
-<span><span class="co">#&gt; S_n (Z score for mean calibration error) -1.00908104947661</span></span>
+<span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
+<span><span class="co">#&gt; S_n (Z score for mean calibration error): -1.00908104947661</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 1.02844827843833</span></span>
 <span><span class="co">#&gt; Component-wise p-values: mean calibration=0.312935765573665 | Distance (bridged)=0.240744428186207</span></span>
 <span><span class="co">#&gt; Combined p-value (Fisher's method): 0.270143602791056</span></span>
-<span><span class="co">#&gt; Location of maximum drift: 14657  | time value: 0.262527774654297  | predictor value: 0.0556592074702229</span></span></code></pre></div>
+<span><span class="co">#&gt; Location of maximum drift: 14657  | time value: 0.262527774654297  | predicted risk: 0.0556592074702229</span></span></code></pre></div>
 <p>The following elements are returned:</p>
 <ul>
 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>n</mi></msub><annotation encoding="application/x-tex">C_n</annotation></semantics></math>:
 sample estimate of mean calibration error
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>−</mo><mi>π</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">E(y-\pi)</annotation></semantics></math>)</p></li>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>−</mo><mi>π</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">E(y-\pi)</annotation></semantics></math>)</p></li>
 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>C</mi><mo>*</mo></msup><annotation encoding="application/x-tex">C^*</annotation></semantics></math>
 maximum absolute cumulative prediction error, divided by the number of
 observations.
@@ -253,7 +257,7 @@ Brownian Bridge test, which returns the following:</p>
 <ul>
 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>n</mi></msub><annotation encoding="application/x-tex">S_n</annotation></semantics></math>:
 the Z score for mean calibration error, obtained as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>n</mi><msub><mi>C</mi><mi>n</mi></msub></mrow><msqrt><mrow><msubsup><mo>∑</mo><mn>1</mn><mi>n</mi></msubsup><msub><mi>π</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msqrt></mfrac><annotation encoding="application/x-tex">\frac{nC_n}{\sqrt{\sum_1^n \pi_i(1-\pi_i)}}</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>n</mi><msub><mi>C</mi><mi>n</mi></msub></mrow><msqrt><mrow><msubsup><mo>∑</mo><mn>1</mn><mi>n</mi></msubsup><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow></msqrt></mfrac><annotation encoding="application/x-tex">\frac{nC_n}{\sqrt{\sum_1^n \pi_i(1-\pi_i)}}</annotation></semantics></math>.
 Note that the denominator is the square-root of total variance if the
 model is calibrated.</p></li>
 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>B</mi><mo>*</mo></msup><annotation encoding="application/x-tex">B^*</annotation></semantics></math>:
@@ -397,14 +401,15 @@ exercise</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cumulcalib.html">cumulcalib</a></span><span class="op">(</span><span class="va">val_data</span><span class="op">$</span><span class="va">y</span>, <span class="va">val_data</span><span class="op">$</span><span class="va">pi2</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Moderate calibration assessment of predicted risks</span></span>
 <span><span class="co">#&gt; C_n (mean calibration error): 0.000155141189373162</span></span>
 <span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00834106759839258</span></span>
-<span><span class="co">#&gt; Method: Two-part Brownian Bridge (BB)</span></span>
-<span><span class="co">#&gt; S_n (Z score for mean calibration error) 0.106201501405249</span></span>
+<span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
+<span><span class="co">#&gt; S_n (Z score for mean calibration error): 0.106201501405249</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 5.66522040991455</span></span>
 <span><span class="co">#&gt; Component-wise p-values: mean calibration=0.915422479736154 | Distance (bridged)=0</span></span>
 <span><span class="co">#&gt; Combined p-value (Fisher's method): 0</span></span>
-<span><span class="co">#&gt; Location of maximum drift: 18992  | time value: 0.420294629063075  | predictor value: 0.106004714711078</span></span>
+<span><span class="co">#&gt; Location of maximum drift: 18992  | time value: 0.420294629063075  | predicted risk: 0.106004714711078</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="480"></p>
 <p>Here, despite the fact that average predicted risks are close to the
