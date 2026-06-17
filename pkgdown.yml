@@ -3,4 +3,5 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   tutorial: tutorial.html
-last_built: 2026-06-17T23:22Z
+  tutorialITE: tutorialITE.html
+last_built: 2026-06-17T23:25Z

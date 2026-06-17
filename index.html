@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9000</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="articles/tutorial.html">A tutorial on the cumulative calibration assessment and the cumulcalib package</a>
+    </li>
+    <li>
+      <a href="articles/tutorialITE.html">Assessing moderate calibration of individualized treatment effects with cumulcalibITE</a>
     </li>
   </ul>
 </li>
@@ -82,19 +85,27 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of cumulcalib is to enable the use of the assessment of prediction model calibration using the cumulative calibration methodology. For more information, please refer to the original publication (<a href="https://doi.org/10.1002/sim.10138" class="external-link uri">https://doi.org/10.1002/sim.10138</a>). The package also comes with a tutorial, which you can view after installing the package as</p>
+<p>cumulcalib provides non-parametric, tuning-parameter-free assessment of model calibration on the cumulative-sum domain, for two settings:</p>
+<ul>
+<li>
+<strong>Risk prediction models</strong> — <code><a href="reference/cumulcalib.html">cumulcalib()</a></code> assesses the calibration of predicted risks (Sadatsafavi and Petkau 2024, <a href="https://doi.org/10.1002/sim.10138" class="external-link uri">https://doi.org/10.1002/sim.10138</a>).</li>
+<li>
+<strong>Individualized treatment effect (ITE) models</strong> — <code><a href="reference/cumulcalibITE.html">cumulcalibITE()</a></code> assesses the moderate calibration of predicted treatment benefits using data from a randomized trial (Sadatsafavi et al. 2025, <a href="https://doi.org/10.48550/arXiv.2512.08140" class="external-link uri">https://doi.org/10.48550/arXiv.2512.08140</a>).</li>
+</ul>
+<p>The package comes with two tutorials (vignettes), which you can view after installing the package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"tutorial"</span>, package<span class="op">=</span><span class="st">"cumulcalib"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"tutorial"</span>, package <span class="op">=</span> <span class="st">"cumulcalib"</span><span class="op">)</span>     <span class="co"># risk prediction models</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"tutorialITE"</span>, package <span class="op">=</span> <span class="st">"cumulcalib"</span><span class="op">)</span>  <span class="co"># ITE models</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>The package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cumulcalib"</span><span class="op">)</span></span></code></pre></div>
-<p>You can also install the <em>development</em> version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can also install the <em>development</em> version, including the individualized treatment effect (ITE) functionality, from the <code>cumulcalibITE</code> branch on <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes") #this package is necessary to connect to github</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"resplab/cumulcalib"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"resplab/cumulcalib@cumulcalibITE"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -109,16 +120,17 @@
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cumulcalib.html">cumulcalib</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">p</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Moderate calibration assessment of predicted risks</span></span>
 <span><span class="co">#&gt; C_n (mean calibration error): 0.00532270104567871</span></span>
 <span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00740996981029672</span></span>
-<span><span class="co">#&gt; Method: Two-part Brownian Bridge (BB)</span></span>
-<span><span class="co">#&gt; S_n (Z score for mean calibration error) 0.489295496431201</span></span>
+<span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
+<span><span class="co">#&gt; S_n (Z score for mean calibration error): 0.489295496431201</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 0.904915434767163</span></span>
 <span><span class="co">#&gt; Component-wise p-values: mean calibration=0.624632509005787 | Distance (bridged)=0.385979705481866</span></span>
 <span><span class="co">#&gt; Combined p-value (Fisher's method): 0.584068794836004</span></span>
-<span><span class="co">#&gt; Location of maximum drift: 701  | time value: 0.457280572542993  | predictor value: 0.217915058214255</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, draw_sig<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example-1.png" width="100%"></p>
+<span><span class="co">#&gt; Location of maximum drift: 701  | time value: 0.457280572542993  | predicted risk: 0.217915058214255</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-example-1.png" alt="" width="100%"></p>
 </div>
 </div>
   </div>
@@ -158,7 +170,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml?query=branch%3AcumulcalibITE" class="external-link"><img src="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg?branch=cumulcalibITE" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
