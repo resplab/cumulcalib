@@ -5,14 +5,14 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg?branch=cumulcalibITE)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml?query=branch%3AcumulcalibITE)
 <!-- badges: end -->
 
 The goal of cumulcalib is to enable the assessment of
 prediction model calibration using the cumulative calibration
 methodology. For more information, please refer to the original
 publication (<https://doi.org/10.1002/sim.10138>). The package also
-comes with a [tutorial, which you can access on CRAN](https://cran.r-project.org/web/packages/cumulcalib/vignettes/tutorial.html) or view after installing the package
+comes with a tutorial, which you can access from its [CRAN page](https://CRAN.R-project.org/package=cumulcalib) or view after installing the package
 as
 
 ``` r

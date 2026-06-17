@@ -1,6 +1,6 @@
 Package: cumulcalib
 Title: Cumulative Calibration Assessment for Prediction Models
-Version: 0.0.1
+Version: 0.0.1.9000
 Authors@R: 
     person("Mohsen", "Sadatsafavi", , "mohsen.sadatsafavi@ubc.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0419-7862"))
