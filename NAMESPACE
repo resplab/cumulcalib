@@ -3,7 +3,7 @@
 S3method(plot,cumulcalib)
 S3method(summary,cumulcalib)
 export(cumulcalib)
-export(cumulcalibB)
+export(cumulcalibITE)
 export(pKolmogorov)
 export(pMAD_BM)
 export(pMAD_BM_c)

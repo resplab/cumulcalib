@@ -4,3 +4,6 @@
 .Ruserdata
 /doc/
 /Meta/
+
+# rendered vignettes (build artifacts)
+vignettes/*.html
