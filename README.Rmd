@@ -19,10 +19,16 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg?branch=cumulcalibITE)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml?query=branch%3AcumulcalibITE)
 <!-- badges: end -->
 
-The goal of cumulcalib is to enable the use of the assessment of prediction model calibration using the cumulative calibration methodology. For more information, please refer to the original publication (https://doi.org/10.1002/sim.10138). The package also comes with a tutorial, which you can view after installing the package as
+cumulcalib provides non-parametric, tuning-parameter-free assessment of model calibration on the cumulative-sum domain, for two settings:
+
+- **Risk prediction models** — `cumulcalib()` assesses the calibration of predicted risks (Sadatsafavi and Petkau 2024, <https://doi.org/10.1002/sim.10138>).
+- **Individualized treatment effect (ITE) models** — `cumulcalibITE()` assesses the moderate calibration of predicted treatment benefits using data from a randomized trial (Sadatsafavi et al. 2025, <https://doi.org/10.48550/arXiv.2512.08140>).
+
+The package comes with two tutorials (vignettes), which you can view after installing the package:
 
 ``` r
-vignette("tutorial", package="cumulcalib")
+vignette("tutorial", package = "cumulcalib")     # risk prediction models
+vignette("tutorialITE", package = "cumulcalib")  # ITE models
 ```
 
 
@@ -52,6 +58,6 @@ y <- rbinom(1000,1,p)
 res <- cumulcalib(y, p)
 
 summary(res)
-plot(res, draw_sig=F)
+plot(res)
 ```
 
