@@ -218,11 +218,14 @@ plot.cumulcalib <- function(
     if (grepl("h", stats_config$lines[i_conf], ignore.case = TRUE)) {
       if (is_bridge) {
         sig_p2 <- qKolmogorov(stats_config$sig[i_conf])
+        #Significance band runs parallel to the bridge (start-to-end) line,
+        #offset by the Kolmogorov critical value on the side of the max deviation
+        sign_p2 <- sign(W[loc] - t_[loc] * W[n])
         stat_lines[1 + nrow(stat_lines), ] <- list(
           0,
           1,
-          sign(W[loc]) * sig_p2,
-          sign(W[loc]) * (sig_p2 - W[n]),
+          sign_p2 * sig_p2,
+          sign_p2 * sig_p2 + W[n],
           4,
           stats_config$col[i_conf]
         )
