@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg?branch=cumulcalibITE)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml?query=branch%3AcumulcalibITE)
+[![R-CMD-check](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 cumulcalib provides non-parametric, tuning-parameter-free assessment of
@@ -35,13 +35,13 @@ The package can be installed from CRAN:
 install.packages("cumulcalib")
 ```
 
-You can also install the *development* version, including the
-individualized treatment effect (ITE) functionality, from the
-`cumulcalibITE` branch on [GitHub](https://github.com/) with:
+You can also install the *development* version, which includes the
+individualized treatment effect (ITE) functionality, from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes") #this package is necessary to connect to github
-remotes::install_github("resplab/cumulcalib@cumulcalibITE")
+remotes::install_github("resplab/cumulcalib")
 ```
 
 ## Example
@@ -58,13 +58,13 @@ res <- cumulcalib(y, p)
 summary(res)
 #> Moderate calibration assessment of predicted risks
 #> C_n (mean calibration error): 0.00532270104567871
-#> C* (maximum absolute cumulative calibration error): 0.00740996981029672
+#> C* (maximum cumulative calibration error): 0.00740996981029672  (observed risk < predicted)
+#>   Location of maximum cumulative error: time = 0.457280572542993, predicted risk = 0.217915058214255
 #> Method: Two-part Brownian bridge (BB)
 #> S_n (Z score for mean calibration error): 0.489295496431201
 #> B* (test statistic for maximum absolute bridged calibration error): 0.904915434767163
 #> Component-wise p-values: mean calibration=0.624632509005787 | Distance (bridged)=0.385979705481866
 #> Combined p-value (Fisher's method): 0.584068794836004
-#> Location of maximum drift: 701  | time value: 0.457280572542993  | predicted risk: 0.217915058214255
 plot(res)
 ```
 
