@@ -38,3 +38,24 @@ test_that("print works for one-part methods", {
   out <- capture.output(print(res))
   expect_true(any(grepl("Test statistic", out)))
 })
+
+test_that("print reports the direction of C* (worded tag) for ITE", {
+  set.seed(51)
+  n <- 3000
+  p <- rbeta(n, 1, 2)
+  a <- rbinom(n, 1, 0.5)
+  h <- rep(0.10, n)              # model claims benefit of 0.10 ...
+  y <- rbinom(n, 1, p)           # ... but treatment truly has ~no effect
+  out <- capture.output(print(cumulcalibITE(y, h = h, a = a)))
+  expect_true(any(grepl("Maximum cumulative calibration error", out)))
+  expect_true(any(grepl("observed benefit < predicted", out)))
+})
+
+test_that("print reports the direction of C* for risk models", {
+  set.seed(52)
+  n <- 3000
+  p <- rbeta(n, 1, 2)
+  y <- rbinom(n, 1, p)
+  out <- capture.output(print(cumulcalib(y = y, p = pmin(1, p + 0.15), method = "BM")))
+  expect_true(any(grepl("observed risk < predicted", out)))
+})

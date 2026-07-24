@@ -41,3 +41,55 @@ test_that("summary rejects invalid or multiple methods", {
   expect_error(summary(res, method = "NOPE"))
   expect_error(summary(res, method = c("BB", "BM")))
 })
+
+test_that("summary exposes C* direction/location, and it is method-independent", {
+  set.seed(34)
+  n <- 3000
+  p <- rbeta(n, 1, 2)
+  a <- rbinom(n, 1, 0.5)
+  h <- rep(0.10, n)               # over-predicts benefit
+  y <- rbinom(n, 1, p)
+  res <- cumulcalibITE(y, h = h, a = a, method = c("BB", "BM"))
+
+  s_bb <- summary(res, method = "BB")
+  s_bm <- summary(res, method = "BM")
+
+  expect_true(all(c("C_star_sign", "C_star_direction", "C_star_time",
+                    "C_star_pred") %in% names(s_bb)))
+  # C* is a method-independent metric: direction must not depend on the method
+  expect_equal(s_bb$C_star_sign, s_bm$C_star_sign)
+  expect_equal(s_bb$C_star_direction, s_bm$C_star_direction)
+  expect_equal(s_bb$C_star_sign, -1)
+  expect_match(s_bb$C_star_direction, "observed benefit < predicted")
+  # the old method-specific location field is gone
+  expect_null(s_bb$loc_pred)
+})
+
+test_that("summary describes a reversing miscalibration and gates on S*", {
+  set.seed(71)
+  n <- 5000
+  p <- runif(n)
+  # under-predicts risk for low p, over-predicts for high p -> up-then-down process
+  true <- pmin(pmax(p + 0.15 * (0.5 - p), 0.001), 0.999)
+  y <- rbinom(n, 1, true)
+  res <- cumulcalib(y, p, method = "BM")
+
+  s <- summary(res)
+  expect_false(is.null(s$crossover))
+  expect_true(s$crossover$reverses)
+  expect_match(s$crossover$left, "exceeds predicted")
+  expect_match(s$crossover$right, "falls below predicted")
+  # gating: an impossibly high threshold suppresses the shape description
+  expect_null(summary(res, shape_threshold = Inf)$crossover)
+})
+
+test_that("summary reports one-directional shape for monotone miscalibration", {
+  set.seed(72)
+  n <- 5000
+  p <- runif(n)
+  true <- pmin(p + 0.10, 0.999)   # uniform under-prediction of risk
+  y <- rbinom(n, 1, true)
+  res <- cumulcalib(y, p, method = "BM")
+  s <- summary(res, shape_threshold = 0)   # force a description
+  expect_false(s$crossover$reverses)
+})
