@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -92,14 +92,14 @@
 
 <dt id="arg-stats-config">stats_config<a class="anchor" aria-label="anchor" href="#arg-stats-config"></a></dt>
 <dd><p>A list specifying the visualization parameters for the
-statistical test(s). Defaults to an empty list (<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>), which uses
-all built-in defaults (e.g., drawing both the statistic and its
-significance threshold at the 0.95 level, in blue and red).
+statistical test(s). Defaults to an empty list (<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>), which by
+default draws only the statistic line(s) (<code>"v"</code>, in blue and red),
+not their significance threshold(s) (<code>"h"</code>, at the 0.95 level).
 If set to <code>NULL</code>, no statistical lines are drawn.
 Recognized elements are <code>sig</code> (significance level(s)),
 <code>lines</code> (which lines to draw: include <code>"v"</code> for the vertical
 statistic line and/or <code>"h"</code> for the horizontal significance
-threshold), and <code>col</code> (color(s)).</p></dd>
+threshold, e.g. <code>"vh"</code> to draw both), and <code>col</code> (color(s)).</p></dd>
 
 
 <dt id="arg-x-axis">x2axis<a class="anchor" aria-label="anchor" href="#arg-x-axis"></a></dt>

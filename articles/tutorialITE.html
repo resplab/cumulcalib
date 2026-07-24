@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -212,14 +212,14 @@ generally has higher power.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Moderate calibration assessment of individualized treatment effects</span></span>
 <span><span class="co">#&gt; Approach: marginal</span></span>
-<span><span class="co">#&gt; C_n (mean calibration error): 0.00450999603471587</span></span>
-<span><span class="co">#&gt; C* (maximum cumulative calibration error): 0.00559910543541152  (observed benefit &gt; predicted)</span></span>
-<span><span class="co">#&gt;   Location of maximum cumulative error: time = 0.96015470901985, predicted ITE = 0.0445832755378061</span></span>
+<span><span class="co">#&gt; C_n (mean calibration error): 0.00450999603471589</span></span>
+<span><span class="co">#&gt; C* (maximum cumulative calibration error): 0.00559910543541154  (observed benefit &gt; predicted)</span></span>
+<span><span class="co">#&gt;   Location of maximum cumulative error: time = 0.96015470901985, predicted ITE = 0.044583275537806</span></span>
 <span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
-<span><span class="co">#&gt; S_n (Z score for mean calibration error): 1.1577422710549</span></span>
+<span><span class="co">#&gt; S_n (Z score for mean calibration error): 1.15774227105491</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 1.39879642646784</span></span>
-<span><span class="co">#&gt; Component-wise p-values: mean calibration=0.246969228103395 | Distance (bridged)=0.039950117117651</span></span>
-<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.0554357836981592</span></span></code></pre></div>
+<span><span class="co">#&gt; Component-wise p-values: mean calibration=0.246969228103392 | Distance (bridged)=0.0399501171176506</span></span>
+<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.0554357836981584</span></span></code></pre></div>
 <p>The bridge test reports two components and a unified p-value:</p>
 <ul>
 <li>the <strong>mean-calibration</strong> component (the standardized
@@ -249,13 +249,16 @@ method used for risks:</p>
 standardized
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>S</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{S\}</annotation></semantics></math>
 process; the top X-axis shows the corresponding predicted ITEs, and the
-right Y-axis shows the scaled (un-standardized) cumulative errors, whose
-terminal value is <code>C_n</code>. The blue markings relate to the
-mean-calibration component (the terminal value and its significance
-threshold) and the red markings to the bridge component. One quirk
-specific to the marginal approach is that, because the marginal variance
-is not guaranteed to be monotone, the process can occasionally show
-small negative time increments.</p>
+right Y-axis shows the scaled (unstandardized) cumulative errors, whose
+terminal value is <code>C_n</code>. The blue vertical line marks the
+mean-calibration component (the terminal value of the random walk) and
+the red vertical line the bridge component. By default their
+significance thresholds are not drawn; pass
+<code>stats_config = list(lines = "vh")</code> to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> to
+add them as dashed lines of the same color. One quirk specific to the
+marginal approach is that, because the marginal variance is not
+guaranteed to be monotone, the process can occasionally show small
+negative time increments.</p>
 </div>
 <div class="section level2">
 <h2 id="the-conditional-approach">The conditional approach<a class="anchor" aria-label="anchor" href="#the-conditional-approach"></a>

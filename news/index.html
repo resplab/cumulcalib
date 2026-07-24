@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -61,14 +61,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.0.1.9002" id="cumulcalib-0019002-development">cumulcalib 0.0.1.9002 (development)<a class="anchor" aria-label="anchor" href="#cumulcalib-0019002-development"></a></h2>
-<ul><li>
-<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now describes the shape of miscalibration around the maximum cumulative calibration error (C<em>): whether the cumulative error reverses at an interior peak (opposite directions on either side of that location) or is one-directional (a monotone accumulation), with the direction(s) worded in terms of observed vs predicted. Reported only when the standardized maximum deviation S</em> is at least <code>shape_threshold</code> (default 1.5), so it stays silent for unremarkable processes. Added the <code>crossover</code> element to the summary object and the <code>shape_threshold</code> argument to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.0.1.9001" id="cumulcalib-0019001-development">cumulcalib 0.0.1.9001 (development)<a class="anchor" aria-label="anchor" href="#cumulcalib-0019001-development"></a></h2>
-<ul><li>
-<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now report the direction of the maximum cumulative calibration error C* (as a worded tag, e.g. “observed benefit &lt; predicted”) together with the predicted value at its location. Direction is reported only for C<em>, the descriptive metric; the test statistics (S_n, S</em>, B*) are referred to null distributions of absolute deviations and remain unsigned. The direction is derived on the fly and is consistent with <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</li>
+<h2 class="page-header" data-toc-text="0.1.0" id="cumulcalib-010">cumulcalib 0.1.0<a class="anchor" aria-label="anchor" href="#cumulcalib-010"></a></h2>
+<ul><li><p>Added <code><a href="../reference/cumulcalibITE.html">cumulcalibITE()</a></code>, extending the cumulative calibration methodology to the assessment of moderate calibration of individualized treatment effect (ITE) models using data from a randomized trial (Sadatsafavi et al. 2025, <a href="doi:10.48550/arXiv.2512.08140" class="uri">doi:10.48550/arXiv.2512.08140</a>). A companion vignette demonstrates its use.</p></li>
+<li><p>Added <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> methods for objects returned by <code><a href="../reference/cumulcalib.html">cumulcalib()</a></code> and <code><a href="../reference/cumulcalibITE.html">cumulcalibITE()</a></code>, and extended <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> to also support <code><a href="../reference/cumulcalibITE.html">cumulcalibITE()</a></code> output.</p></li>
+<li><p><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now report the direction of the maximum cumulative calibration error C* (as a worded tag, e.g. “observed benefit &lt; predicted”) together with the predicted value at its location. Direction is reported only for C<em>, the descriptive metric; the test statistics (S_n, S</em>, B*) are referred to null distributions of absolute deviations and remain unsigned. The direction is derived on the fly and is consistent with <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</p></li>
+<li><p><code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> now describes the shape of miscalibration around the maximum cumulative calibration error (C<em>): whether the cumulative error reverses at an interior peak (opposite directions on either side of that location) or is one-directional (a monotone accumulation), with the direction(s) worded in terms of observed vs predicted. Reported only when the standardized maximum deviation S</em> is at least <code>shape_threshold</code> (default 1.5), so it stays silent for unremarkable processes. Added the <code>crossover</code> element to the summary object and the <code>shape_threshold</code> argument to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>.</p></li>
+<li><p><strong>Behavior change:</strong> <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> no longer draws significance-threshold lines by default; only the statistic line(s) are drawn. Pass <code>stats_config = list(lines = "vh")</code> to restore the previous default of showing both, or <code>list(lines = "h")</code> for thresholds only.</p></li>
+<li><p>Fixed a bug where the bridge test’s significance line was not drawn parallel to the line connecting the start and end of the random walk.</p></li>
+<li><p>Fixed an error in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> for the <code>BM2p</code> method caused by a stray <code><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines()</a></code> call.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.1" id="cumulcalib-001">cumulcalib 0.0.1<small>2024-06-13</small><a class="anchor" aria-label="anchor" href="#cumulcalib-001"></a></h2>
