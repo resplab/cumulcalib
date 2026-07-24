@@ -102,10 +102,10 @@
 <p>The package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cumulcalib"</span><span class="op">)</span></span></code></pre></div>
-<p>You can also install the <em>development</em> version, including the individualized treatment effect (ITE) functionality, from the <code>cumulcalibITE</code> branch on <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can also install the <em>development</em> version, which includes the individualized treatment effect (ITE) functionality, from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes") #this package is necessary to connect to github</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"resplab/cumulcalib@cumulcalibITE"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"resplab/cumulcalib"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -122,13 +122,13 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Moderate calibration assessment of predicted risks</span></span>
 <span><span class="co">#&gt; C_n (mean calibration error): 0.00532270104567871</span></span>
-<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00740996981029672</span></span>
+<span><span class="co">#&gt; C* (maximum cumulative calibration error): 0.00740996981029672  (observed risk &lt; predicted)</span></span>
+<span><span class="co">#&gt;   Location of maximum cumulative error: time = 0.457280572542993, predicted risk = 0.217915058214255</span></span>
 <span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
 <span><span class="co">#&gt; S_n (Z score for mean calibration error): 0.489295496431201</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 0.904915434767163</span></span>
 <span><span class="co">#&gt; Component-wise p-values: mean calibration=0.624632509005787 | Distance (bridged)=0.385979705481866</span></span>
 <span><span class="co">#&gt; Combined p-value (Fisher's method): 0.584068794836004</span></span>
-<span><span class="co">#&gt; Location of maximum drift: 701  | time value: 0.457280572542993  | predicted risk: 0.217915058214255</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-1.png" alt="" width="100%"></p>
 </div>
@@ -170,7 +170,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml?query=branch%3AcumulcalibITE" class="external-link"><img src="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg?branch=cumulcalibITE" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/resplab/cumulcalib/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
