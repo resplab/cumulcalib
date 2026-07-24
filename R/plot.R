@@ -12,14 +12,14 @@
 #' BB1p: One-part Brownian bridge
 #' BB2p (or simply BB): Two-part Brownian bridge
 #' @param stats_config A list specifying the visualization parameters for the
-#'   statistical test(s). Defaults to an empty list (\code{list()}), which uses
-#'   all built-in defaults (e.g., drawing both the statistic and its
-#'   significance threshold at the 0.95 level, in blue and red).
+#'   statistical test(s). Defaults to an empty list (\code{list()}), which by
+#'   default draws only the statistic line(s) (\code{"v"}, in blue and red),
+#'   not their significance threshold(s) (\code{"h"}, at the 0.95 level).
 #'   If set to \code{NULL}, no statistical lines are drawn.
 #'   Recognized elements are \code{sig} (significance level(s)),
 #'   \code{lines} (which lines to draw: include \code{"v"} for the vertical
 #'   statistic line and/or \code{"h"} for the horizontal significance
-#'   threshold), and \code{col} (color(s)).
+#'   threshold, e.g. \code{"vh"} to draw both), and \code{col} (color(s)).
 #' @param x2axis If true, draws a second x-axis (on top) showing predicted risks
 #' @param y2axis If true, draws a second y-axis (on right) showing scaled partial sums
 #' @param draw_polygon If true, draws the black triangle marker at the origin. Default is TRUE
@@ -89,7 +89,7 @@ plot.cumulcalib <- function(
     switch(
       1 + length(stats_config$lines),
       {
-        stats_config$lines <- c("vh", "vh")
+        stats_config$lines <- c("v", "v")
       },
       {
         stats_config$lines <- rep(stats_config$lines, 2)
@@ -127,7 +127,7 @@ plot.cumulcalib <- function(
     switch(
       1 + length(stats_config$lines),
       {
-        stats_config$lines <- "vh"
+        stats_config$lines <- "v"
       },
       {},
       {

@@ -128,9 +128,9 @@ The returning object from the function call can be directly plotted:
 
 The X axis is the 'time' value (running from 0 to 1). The corresponding predicted values are shown on the second X-axis on top. The default Y axis is the standardized sum (cumulative sum divided by the square root of the sum of variance of predicted risks). The second Y axis provides 'scaled' cumulative sum (divided by the number of observations). This means the terminal value of the random walk can be marked on the second Y-axis axis to identify mean calibration error.
 
-The blue and red vertical lines, respectively, show the terminal value of the random walk and its maximum bridged deviation (given the default method, Brownian bridge, is used). The dotted lines of the same color mark the critical value of the test (by default at 5% significance level, see the documentation for the cumulcalib() function on how to disable inference lines or change significance level).
+The blue and red vertical lines, respectively, show the terminal value of the random walk and its maximum bridged deviation (given the default method, Brownian bridge, is used). By default their significance thresholds (at 5%) are not drawn; pass `stats_config = list(lines = "vh")` to `plot()` to add them as dashed lines of the same color (see the documentation for `plot.cumulcalib()` for further options).
 
-Here it is obvious that neither the terminal value (mean calibration error) nor the maximum deviation reach statistical significance. 
+As reported above, neither the terminal value (mean calibration error) nor the maximum deviation reach statistical significance.
 
 
 

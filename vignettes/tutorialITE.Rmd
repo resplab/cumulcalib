@@ -97,7 +97,7 @@ The returned object is plotted with the same `plot()` method used for risks:
   plot(res)
 ```
 
-The primary X and Y axes show the time and location components of the standardized \(\{S\}\) process; the top X-axis shows the corresponding predicted ITEs, and the right Y-axis shows the scaled (un-standardized) cumulative errors, whose terminal value is `C_n`. The blue markings relate to the mean-calibration component (the terminal value and its significance threshold) and the red markings to the bridge component. One quirk specific to the marginal approach is that, because the marginal variance is not guaranteed to be monotone, the process can occasionally show small negative time increments.
+The primary X and Y axes show the time and location components of the standardized \(\{S\}\) process; the top X-axis shows the corresponding predicted ITEs, and the right Y-axis shows the scaled (unstandardized) cumulative errors, whose terminal value is `C_n`. The blue vertical line marks the mean-calibration component (the terminal value of the random walk) and the red vertical line the bridge component. By default their significance thresholds are not drawn; pass `stats_config = list(lines = "vh")` to `plot()` to add them as dashed lines of the same color. One quirk specific to the marginal approach is that, because the marginal variance is not guaranteed to be monotone, the process can occasionally show small negative time increments.
 
 ## The conditional approach
 

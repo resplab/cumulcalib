@@ -20,14 +20,14 @@
 \item{method}{Which method to use. See details. If unspecified, uses the default method used in the cumulcalib() call.}
 
 \item{stats_config}{A list specifying the visualization parameters for the
-statistical test(s). Defaults to an empty list (\code{list()}), which uses
-all built-in defaults (e.g., drawing both the statistic and its
-significance threshold at the 0.95 level, in blue and red).
+statistical test(s). Defaults to an empty list (\code{list()}), which by
+default draws only the statistic line(s) (\code{"v"}, in blue and red),
+not their significance threshold(s) (\code{"h"}, at the 0.95 level).
 If set to \code{NULL}, no statistical lines are drawn.
 Recognized elements are \code{sig} (significance level(s)),
 \code{lines} (which lines to draw: include \code{"v"} for the vertical
 statistic line and/or \code{"h"} for the horizontal significance
-threshold), and \code{col} (color(s)).}
+threshold, e.g. \code{"vh"} to draw both), and \code{col} (color(s)).}
 
 \item{x2axis}{If true, draws a second x-axis (on top) showing predicted risks}
 
