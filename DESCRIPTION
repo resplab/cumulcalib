@@ -1,6 +1,6 @@
 Package: cumulcalib
 Title: Cumulative Calibration Assessment for Prediction Models
-Version: 0.0.1
+Version: 0.0.1.9002
 Authors@R: 
     person("Mohsen", "Sadatsafavi", , "mohsen.sadatsafavi@ubc.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0419-7862"))
@@ -22,5 +22,6 @@ VignetteBuilder:
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Language: en-US
+Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3
