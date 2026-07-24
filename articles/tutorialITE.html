@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9002</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@ treatment effects with cumulcalibITE</h1>
                         <h4 data-toc-skip class="author">Mohsen
 Sadatsafavi</h4>
             
-            <h4 data-toc-skip class="date">2026-06-20</h4>
+            <h4 data-toc-skip class="date">2026-07-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/resplab/cumulcalib/blob/cumulcalibITE/vignettes/tutorialITE.Rmd" class="external-link"><code>vignettes/tutorialITE.Rmd</code></a></small>
       <div class="hidden name"><code>tutorialITE.Rmd</code></div>
@@ -213,13 +213,13 @@ generally has higher power.</p>
 <span><span class="co">#&gt; Moderate calibration assessment of individualized treatment effects</span></span>
 <span><span class="co">#&gt; Approach: marginal</span></span>
 <span><span class="co">#&gt; C_n (mean calibration error): 0.00450999603471589</span></span>
-<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00559910543541154</span></span>
+<span><span class="co">#&gt; C* (maximum cumulative calibration error): 0.00559910543541154  (observed benefit &gt; predicted)</span></span>
+<span><span class="co">#&gt;   Location of maximum cumulative error: time = 0.96015470901985, predicted ITE = 0.044583275537806</span></span>
 <span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
 <span><span class="co">#&gt; S_n (Z score for mean calibration error): 1.15774227105491</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 1.39879642646784</span></span>
 <span><span class="co">#&gt; Component-wise p-values: mean calibration=0.246969228103392 | Distance (bridged)=0.0399501171176506</span></span>
-<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.0554357836981584</span></span>
-<span><span class="co">#&gt; Location of maximum drift: 12167  | time value: 0.536779410233788  | predicted ITE: 0.00884429506404006</span></span></code></pre></div>
+<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.0554357836981584</span></span></code></pre></div>
 <p>The bridge test reports two components and a unified p-value:</p>
 <ul>
 <li>the <strong>mean-calibration</strong> component (the standardized
@@ -290,7 +290,7 @@ approach avoids that assumption at the cost of being heuristic.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>

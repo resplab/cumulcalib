@@ -18,7 +18,7 @@ models that predict individual treatment effects (treatment benefit)."><!-- math
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9002</span>
       </span>
     </div>
 
@@ -132,13 +132,13 @@ models that predict individual treatment effects (treatment benefit).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Moderate calibration assessment of individualized treatment effects</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Approach: marginal</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C_n (mean calibration error): -0.0131715906240394</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> C* (maximum absolute cumulative calibration error): 0.0271867042207731</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C* (maximum cumulative calibration error): 0.0271867042207731  (observed benefit &lt; predicted)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Location of maximum cumulative error: time = 0.676923010517612, predicted ITE = 0.0333184406976216</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Method: Two-part Brownian bridge (BB)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S_n (Z score for mean calibration error): -0.447313323539222</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> B* (test statistic for maximum absolute bridged calibration error): 0.620476396647803</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Component-wise p-values: mean calibration=0.654648848387289 | Distance (bridged)=0.836065122589227</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Combined p-value (Fisher's method): 0.877207073584821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location of maximum drift: 675  | time value: 0.676923010517612  | predicted ITE: 0.0333184406976216</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="cumulcalibITE-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
@@ -155,7 +155,7 @@ models that predict individual treatment effects (treatment benefit).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>

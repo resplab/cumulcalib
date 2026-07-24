@@ -19,7 +19,7 @@ displayed by print.summary.cumulcalib()."><!-- mathjax --><script src="https://c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9002</span>
       </span>
     </div>
 
@@ -71,7 +71,7 @@ displayed by <code><a href="print.summary.cumulcalib.html">print.summary.cumulca
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'cumulcalib'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="cn">NULL</span>, shape_threshold <span class="op">=</span> <span class="fl">1.5</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -86,6 +86,10 @@ displayed by <code><a href="print.summary.cumulcalib.html">print.summary.cumulca
 <dd><p>Which method to use. Options are BB (Brownian bridge test), BM (Brownian motion test), BB1p (1-part Brownian bridge test), and BM2p (2-part Brownian bridge test). If unspecified, uses the default method used in the cumulcalib() call</p></dd>
 
 
+<dt id="arg-shape-threshold">shape_threshold<a class="anchor" aria-label="anchor" href="#arg-shape-threshold"></a></dt>
+<dd><p>Minimum standardized maximum deviation (S*) for the shape of the miscalibration around C* to be described. Below this, the cumulative process is treated as unremarkable and no shape is reported (default 1.5).</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Not used</p></dd>
 
@@ -93,8 +97,18 @@ displayed by <code><a href="print.summary.cumulcalib.html">print.summary.cumulca
     <div id="value">
     <h2>Value</h2>
     <p>An object of class <code>summary.cumulcalib</code>: a list holding the key
-statistics (mean calibration, distance/bridge statistic, p-values, and the
-location of maximum drift) for the selected method.</p>
+statistics for the selected method (mean calibration, distance/bridge
+statistic, p-values) together with the maximum cumulative calibration
+error C* and, since C* is the only quantity that admits a signed
+interpretation, its direction (<code>C_star_sign</code>,
+<code>C_star_direction</code>) and the location of that maximum
+(<code>C_star_time</code>, <code>C_star_pred</code>). The test statistics are reported
+unsigned. When the standardized maximum deviation (S*) is at least
+<code>shape_threshold</code>, a <code>crossover</code> element describes the shape of
+the miscalibration around the C* location: whether the cumulative error
+reverses (an interior peak, with opposite directions on either side) or is
+one-directional (a monotone accumulation), together with the direction(s).
+Otherwise <code>crossover</code> is <code>NULL</code>.</p>
     </div>
 
   </div>
@@ -109,7 +123,7 @@ location of maximum drift) for the selected method.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>

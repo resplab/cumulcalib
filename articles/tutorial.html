@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1.9002</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@ assessment and the cumulcalib package</h1>
                         <h4 data-toc-skip class="author">Mohsen
 Sadatsafavi</h4>
             
-            <h4 data-toc-skip class="date">2026-06-20</h4>
+            <h4 data-toc-skip class="date">2026-07-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/resplab/cumulcalib/blob/cumulcalibITE/vignettes/tutorial.Rmd" class="external-link"><code>vignettes/tutorial.Rmd</code></a></small>
       <div class="hidden name"><code>tutorial.Rmd</code></div>
@@ -232,13 +232,13 @@ results:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Moderate calibration assessment of predicted risks</span></span>
 <span><span class="co">#&gt; C_n (mean calibration error): -0.0015627663862339</span></span>
-<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00200906446334084</span></span>
+<span><span class="co">#&gt; C* (maximum cumulative calibration error): 0.00200906446334084  (observed risk &lt; predicted)</span></span>
+<span><span class="co">#&gt;   Location of maximum cumulative error: time = 0.287796643081862, predicted risk = 0.0603447711748229</span></span>
 <span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
 <span><span class="co">#&gt; S_n (Z score for mean calibration error): -1.00908104947661</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 1.02844827843833</span></span>
 <span><span class="co">#&gt; Component-wise p-values: mean calibration=0.312935765573665 | Distance (bridged)=0.240744428186207</span></span>
-<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.270143602791056</span></span>
-<span><span class="co">#&gt; Location of maximum drift: 14657  | time value: 0.262527774654297  | predicted risk: 0.0556592074702229</span></span></code></pre></div>
+<span><span class="co">#&gt; Combined p-value (Fisher's method): 0.270143602791056</span></span></code></pre></div>
 <p>The following elements are returned:</p>
 <ul>
 <li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>n</mi></msub><annotation encoding="application/x-tex">C_n</annotation></semantics></math>:
@@ -403,13 +403,14 @@ exercise</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Moderate calibration assessment of predicted risks</span></span>
 <span><span class="co">#&gt; C_n (mean calibration error): 0.000155141189373162</span></span>
-<span><span class="co">#&gt; C* (maximum absolute cumulative calibration error): 0.00834106759839258</span></span>
+<span><span class="co">#&gt; C* (maximum cumulative calibration error): 0.00834106759839258  (observed risk &gt; predicted)</span></span>
+<span><span class="co">#&gt;   Location of maximum cumulative error: time = 0.420294629063075, predicted risk = 0.106004714711078</span></span>
+<span><span class="co">#&gt;   Shape: the cumulative error reverses around predicted risk = 0.106 (observed risk exceeds predicted below this point; observed risk falls below predicted above it)</span></span>
 <span><span class="co">#&gt; Method: Two-part Brownian bridge (BB)</span></span>
 <span><span class="co">#&gt; S_n (Z score for mean calibration error): 0.106201501405249</span></span>
 <span><span class="co">#&gt; B* (test statistic for maximum absolute bridged calibration error): 5.66522040991455</span></span>
 <span><span class="co">#&gt; Component-wise p-values: mean calibration=0.915422479736154 | Distance (bridged)=0</span></span>
 <span><span class="co">#&gt; Combined p-value (Fisher's method): 0</span></span>
-<span><span class="co">#&gt; Location of maximum drift: 18992  | time value: 0.420294629063075  | predicted risk: 0.106004714711078</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="480"></p>
 <p>Here, despite the fact that average predicted risks are close to the
@@ -443,7 +444,7 @@ of the test that catches the miscalibration.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>
