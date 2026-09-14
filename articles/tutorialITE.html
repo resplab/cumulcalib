@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cumulcalib</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@ treatment effects with cumulcalibITE</h1>
                         <h4 data-toc-skip class="author">Mohsen
 Sadatsafavi</h4>
             
-            <h4 data-toc-skip class="date">2026-08-06</h4>
+            <h4 data-toc-skip class="date">2026-09-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/resplab/cumulcalib/blob/main/vignettes/tutorialITE.Rmd" class="external-link"><code>vignettes/tutorialITE.Rmd</code></a></small>
       <div class="hidden name"><code>tutorialITE.Rmd</code></div>
@@ -209,6 +209,7 @@ generally has higher power.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/resplab/cumulcalib" class="external-link">cumulcalib</a></span><span class="op">)</span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cumulcalibITE.html">cumulcalibITE</a></span><span class="op">(</span><span class="va">val_data</span><span class="op">$</span><span class="va">y</span>, h <span class="op">=</span> <span class="va">val_data</span><span class="op">$</span><span class="va">d</span>, a <span class="op">=</span> <span class="va">val_data</span><span class="op">$</span><span class="va">a</span>, method <span class="op">=</span> <span class="st">"BB"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; cumulcalibITE: 96 groups of tied predicted ITE values (196 of 17168 observations) detected; redistributing the total location/variance change within each tied group evenly across its observations (ties = "average").</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Moderate calibration assessment of individualized treatment effects</span></span>
 <span><span class="co">#&gt; Approach: marginal</span></span>
