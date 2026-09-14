@@ -8,8 +8,8 @@ published CRAN version (0.0.1) to 0.1.0.
 * Added `cumulcalibITE()`, extending the cumulative calibration methodology
   to the assessment of moderate calibration of individualized treatment
   effect (ITE) models using data from a randomized trial. This is described
-  in a new preprint, added to the Description field as
-  Sadatsafavi et al. (2025) <doi:10.48550/arXiv.2512.08140>.
+  in a paper now published in Statistics in Medicine, cited in the
+  Description field as Sadatsafavi et al. (2026) <doi:10.1002/sim.70724>.
 * Added `print()` methods for objects returned by `cumulcalib()` and
   `cumulcalibITE()`, and extended the existing `summary()` method to also
   support `cumulcalibITE()` output.

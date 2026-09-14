@@ -8,6 +8,7 @@
 #' @param p vector of predicted probabilities.
 #' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
 #' @param ordered if TRUE, y and p are already ordered based on ascending values of p. This is to speed up simulations.
+#' @param ties how to handle tied values of \code{p}. \code{"average"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
 #' @param n_sim if >0, indicates a simulation-based test is requested for inference.
 #' @examples
 #' pi <- rbeta(1000,1,2)
@@ -21,8 +22,11 @@ cumulcalib <- function(
   p,
   method = c("BB", "BM"),
   ordered = FALSE,
+  ties = c("average", "random", "ignore"),
   n_sim = 0
 ) {
+  ties <- match.arg(ties)
+
   if (!ordered) {
     #Order ascendingly based on p, if not already ordered
     o <- order(p)
@@ -31,6 +35,41 @@ cumulcalib <- function(
   }
 
   n <- length(p)
+
+  #Detect ties in p (adjacent equal values, since p is now sorted); act on
+  #them only when present, so there is no overhead in the common untied case
+  tied_lengths <- rle(p)$lengths
+  tied_lengths <- tied_lengths[tied_lengths > 1]
+  if (length(tied_lengths) > 0) {
+    n_groups <- length(tied_lengths)
+    n_affected <- sum(tied_lengths)
+    if (ties == "average") {
+      y <- stats::ave(y, p, FUN = mean)
+      message(sprintf(
+        "cumulcalib: %d groups of tied predicted risk values (%d of %d observations) detected; averaging Y within tied groups (ties = \"average\").",
+        n_groups,
+        n_affected,
+        n
+      ))
+    } else if (ties == "random") {
+      o2 <- order(p, stats::runif(n))
+      p <- p[o2]
+      y <- y[o2]
+      warning(sprintf(
+        "cumulcalib: %d groups of tied predicted risk values (%d of %d observations) detected; using ties = \"random\" (tied observations randomly reordered). Results are stochastic and may differ across runs unless a random seed is set.",
+        n_groups,
+        n_affected,
+        n
+      ))
+    } else {
+      warning(sprintf(
+        "cumulcalib: %d groups of tied predicted risk values (%d of %d observations) detected, but ties = \"ignore\" was requested; results may depend on the arbitrary order of tied observations in the input data and may not be reproducible.",
+        n_groups,
+        n_affected,
+        n
+      ))
+    }
+  }
 
   #The time component of the random walk
   T_ <- sum(p * (1 - p)) #Total 'time'
@@ -72,6 +111,7 @@ cumulcalib <- function(
 #' @param p optional vector of predicted baseline risks (the risk without treatment). If omitted (NULL), the marginal test is performed using observed event rates in the treated and control groups; if supplied, the conditional test is performed. Default is NULL.
 #' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
 #' @param ordered if TRUE, the data are already ordered based on ascending values of h. This is to speed up simulations.
+#' @param ties how to handle tied values of \code{h} (observations sharing the exact same predicted ITE). \code{"average"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
 #' @param n_sim if >0, indicates a simulation-based test is requested for inference.
 #' @param aux if TRUE, auxiliary quantities (used internally and for diagnostics) are returned in the result. Default is FALSE.
 #' @examples
@@ -90,9 +130,12 @@ cumulcalibITE <- function(
   p = NULL,
   method = c("BB", "BM"),
   ordered = FALSE,
+  ties = c("average", "random", "ignore"),
   n_sim = 0,
   aux = FALSE
 ) {
+  ties <- match.arg(ties)
+
   if (!ordered) {
     #Order ascendingly based on Y, if not already ordered
     o <- order(h)
@@ -103,6 +146,46 @@ cumulcalibITE <- function(
   }
 
   n <- length(y)
+
+  #Detect ties in h (adjacent equal values, since h is now sorted); act on
+  #them only when present, so there is no overhead in the common untied case
+  run_lengths <- rle(h)$lengths
+  apply_average <- FALSE
+  if (any(run_lengths > 1)) {
+    n_groups <- sum(run_lengths > 1)
+    n_affected <- sum(run_lengths[run_lengths > 1])
+    if (ties == "random") {
+      o2 <- order(h, stats::runif(n))
+      h <- h[o2]
+      y <- y[o2]
+      a <- a[o2]
+      if (!is.null(p)) {
+        p <- p[o2]
+      }
+      warning(sprintf(
+        "cumulcalibITE: %d groups of tied predicted ITE values (%d of %d observations) detected; using ties = \"random\" (tied observations randomly reordered). Results are stochastic and may differ across runs unless a random seed is set.",
+        n_groups,
+        n_affected,
+        n
+      ))
+    } else if (ties == "ignore") {
+      warning(sprintf(
+        "cumulcalibITE: %d groups of tied predicted ITE values (%d of %d observations) detected, but ties = \"ignore\" was requested; results may depend on the arbitrary order of tied observations in the input data and may not be reproducible.",
+        n_groups,
+        n_affected,
+        n
+      ))
+    } else {
+      apply_average <- TRUE
+      message(sprintf(
+        "cumulcalibITE: %d groups of tied predicted ITE values (%d of %d observations) detected; redistributing the total location/variance change within each tied group evenly across its observations (ties = \"average\").",
+        n_groups,
+        n_affected,
+        n
+      ))
+    }
+  }
+
   k <- 1:n
   k1 <- cumsum(a)
   k0 <- k - k1
@@ -111,16 +194,72 @@ cumulcalibITE <- function(
   Y11 <- cumsum(a * y)
   B <- k * (ifelse(k0 != 0, Y01 / k0, 0) - ifelse(k1 != 0, Y11 / k1, 0))
 
+  if (apply_average) {
+    #Group structure shared by the location (B) interpolation below, and, for
+    #the marginal approach, the variance (s2) interpolation further down. B
+    #(and, for the marginal approach, s2) are direct functions of the
+    #cumulative aggregate state alone, so they are already correct and
+    #order-invariant AT each tied group's boundaries; only the interior
+    #trajectory (used by max-deviation test statistics and for plotting) is
+    #order-dependent, which we resolve by linearly interpolating between
+    #those (already correct) boundary values. For an untied (size-1) group
+    #this is a no-op, so applying it uniformly whenever any ties are present
+    #is safe.
+    group_end_idx <- cumsum(run_lengths)
+    grp <- rep(seq_along(run_lengths), times = run_lengths)
+    pos_in_group <- sequence(run_lengths)
+
+    interpolate_across_groups <- function(x) {
+      x_end_g <- x[group_end_idx]
+      x_start_g <- c(0, x_end_g[-length(x_end_g)])
+      x_start_g[grp] +
+        pos_in_group / run_lengths[grp] * (x_end_g[grp] - x_start_g[grp])
+    }
+
+    B <- interpolate_across_groups(B)
+  }
+
   if (!is.null(p)) {
-    X_mu <- k *
-      ((1 - a) *
-        ifelse(k0 != 0, (y - p) / k0, 0) -
-        a * ifelse(k1 != 0, (y - p + h) / k1, 0))
+    if (apply_average) {
+      #Redistribute each tied group's aggregate location/variance change evenly
+      #across its observations, using the GROUP-END (not each row's own
+      #incremental) counts and position; this is what makes the result
+      #independent of the arbitrary input order of tied rows.
+      K_end_g <- k[group_end_idx]
+      K0_end_row <- k0[group_end_idx][grp]
+      K1_end_row <- k1[group_end_idx][grp]
+
+      term_mu <- ifelse(
+        a == 0,
+        ifelse(K0_end_row != 0, (y - p) / K0_end_row, 0),
+        ifelse(K1_end_row != 0, -(y - p + h) / K1_end_row, 0)
+      )
+      term_var <- ifelse(
+        a == 0,
+        ifelse(K0_end_row != 0, p * (1 - p) / K0_end_row^2, 0),
+        ifelse(K1_end_row != 0, (p - h) * (1 - p + h) / K1_end_row^2, 0)
+      )
+
+      #Per-group totals via cumsum-differencing (groups are contiguous in h)
+      grp_total_mu <- diff(c(0, cumsum(term_mu)[group_end_idx]))
+      grp_total_var <- diff(c(0, cumsum(term_var)[group_end_idx]))
+
+      dC_group <- K_end_g * grp_total_mu
+      ds2_group <- K_end_g^2 * grp_total_var
+
+      X_mu <- (dC_group / run_lengths)[grp]
+      sigma2 <- (ds2_group / run_lengths)[grp]
+    } else {
+      X_mu <- k *
+        ((1 - a) *
+          ifelse(k0 != 0, (y - p) / k0, 0) -
+          a * ifelse(k1 != 0, (y - p + h) / k1, 0))
+      sigma2 <- k^2 *
+        ((1 - a) *
+          ifelse(k0 != 0, p * (1 - p) / k0^2, 0) +
+          a * ifelse(k1 != 0, (p - h) * (1 - p + h) / k1^2, 0))
+    }
     C <- cumsum(X_mu) / n
-    sigma2 <- k^2 *
-      ((1 - a) *
-        ifelse(k0 != 0, p * (1 - p) / k0^2, 0) +
-        a * ifelse(k1 != 0, (p - h) * (1 - p + h) / k1^2, 0))
     s2 <- cumsum(sigma2)
     if (aux) {
       mu <- ifelse(
@@ -143,6 +282,9 @@ cumulcalibITE <- function(
     s2 <- k^2 *
       (ifelse(k0 != 0, Y01 / k0 * (1 - Y01 / k0) / k0, 0) +
         ifelse(k1 != 0, Y11 / k1 * (1 - Y11 / k1) / k1, 0))
+    if (apply_average) {
+      s2 <- interpolate_across_groups(s2)
+    }
     if (aux) mu <- h
   }
 
@@ -466,17 +608,20 @@ qMAD_BM_c <- function(p, w1) {
   is_ite <- inherits(x, "cumulcalibITE")
   quantity <- if (is_ite) "benefit" else "risk"
   phr <- function(s) {
-    if (s >= 0) paste0("observed ", quantity, " exceeds predicted")
-    else paste0("observed ", quantity, " falls below predicted")
+    if (s >= 0) {
+      paste0("observed ", quantity, " exceeds predicted")
+    } else {
+      paste0("observed ", quantity, " falls below predicted")
+    }
   }
   reverses <- (min(loc, n - loc) >= min_frac * n) &&
     (sign(right_net) != sign(left_net)) &&
     (abs(right_net) > frac * abs(left_net))
   list(
     reverses = reverses,
-    pred     = unname(x$data[loc, 'X']),
-    left     = phr(sign(left_net)),
-    right    = phr(sign(right_net)),
+    pred = unname(x$data[loc, 'X']),
+    left = phr(sign(left_net)),
+    right = phr(sign(right_net)),
     dominant = phr(sign(left_net)),
     predictor_label = if (is_ite) "predicted ITE" else "predicted risk"
   )
@@ -495,11 +640,13 @@ qMAD_BM_c <- function(p, w1) {
 #' @export
 print.cumulcalib <- function(x, ...) {
   is_ite <- inherits(x, "cumulcalibITE")
-  writeLines(if (is_ite) {
-    "Cumulative calibration assessment (individualized treatment effects)"
-  } else {
-    "Cumulative calibration assessment (predicted risks)"
-  })
+  writeLines(
+    if (is_ite) {
+      "Cumulative calibration assessment (individualized treatment effects)"
+    } else {
+      "Cumulative calibration assessment (predicted risks)"
+    }
+  )
 
   m <- x$method
   meta <- paste0(
@@ -583,7 +730,12 @@ print.cumulcalib <- function(x, ...) {
 #' @param ... Not used
 #' @method summary cumulcalib
 #' @export
-summary.cumulcalib <- function(object, method = NULL, shape_threshold = 1.5, ...) {
+summary.cumulcalib <- function(
+  object,
+  method = NULL,
+  shape_threshold = 1.5,
+  ...
+) {
   if (is.null(method)) {
     method <- object$method
   } else {
@@ -641,11 +793,13 @@ summary.cumulcalib <- function(object, method = NULL, shape_threshold = 1.5, ...
 #' @method print summary.cumulcalib
 #' @export
 print.summary.cumulcalib <- function(x, ...) {
-  writeLines(if (x$type == "ITE") {
-    "Moderate calibration assessment of individualized treatment effects"
-  } else {
-    "Moderate calibration assessment of predicted risks"
-  })
+  writeLines(
+    if (x$type == "ITE") {
+      "Moderate calibration assessment of individualized treatment effects"
+    } else {
+      "Moderate calibration assessment of predicted risks"
+    }
+  )
   if (x$type == "ITE" && !is.null(x$approach)) {
     writeLines(paste("Approach:", x$approach))
   }
@@ -654,7 +808,9 @@ print.summary.cumulcalib <- function(x, ...) {
   writeLines(paste0(
     "C* (maximum cumulative calibration error): ",
     x$C_star,
-    "  (", x$C_star_direction, ")"
+    "  (",
+    x$C_star_direction,
+    ")"
   ))
   writeLines(paste0(
     "  Location of maximum cumulative error: time = ",
@@ -669,12 +825,19 @@ print.summary.cumulcalib <- function(x, ...) {
     if (cr$reverses) {
       writeLines(paste0(
         "  Shape: the cumulative error reverses around ",
-        x$predictor_label, " = ", signif(cr$pred, 3),
-        " (", cr$left, " below this point; ", cr$right, " above it)"
+        x$predictor_label,
+        " = ",
+        signif(cr$pred, 3),
+        " (",
+        cr$left,
+        " below this point; ",
+        cr$right,
+        " above it)"
       ))
     } else {
       writeLines(paste0(
-        "  Shape: one-directional, no reversal (", cr$dominant,
+        "  Shape: one-directional, no reversal (",
+        cr$dominant,
         " across the range)"
       ))
     }

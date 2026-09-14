@@ -49,7 +49,7 @@ test_that("summary exposes C* direction/location, and it is method-independent",
   a <- rbinom(n, 1, 0.5)
   h <- rep(0.10, n)               # over-predicts benefit
   y <- rbinom(n, 1, p)
-  res <- cumulcalibITE(y, h = h, a = a, method = c("BB", "BM"))
+  res <- suppressWarnings(cumulcalibITE(y, h = h, a = a, method = c("BB", "BM")))
 
   s_bb <- summary(res, method = "BB")
   s_bm <- summary(res, method = "BM")
