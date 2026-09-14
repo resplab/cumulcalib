@@ -9,7 +9,7 @@ cumulcalib(
   p,
   method = c("BB", "BM"),
   ordered = FALSE,
-  ties = c("average", "random", "ignore"),
+  ties = c("group", "random", "ignore"),
   n_sim = 0
 )
 }
@@ -22,7 +22,7 @@ cumulcalib(
 
 \item{ordered}{if TRUE, y and p are already ordered based on ascending values of p. This is to speed up simulations.}
 
-\item{ties}{how to handle tied values of \code{p}. \code{"average"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.}
+\item{ties}{how to handle tied values of \code{p}. \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.}
 
 \item{n_sim}{if >0, indicates a simulation-based test is requested for inference.}
 }

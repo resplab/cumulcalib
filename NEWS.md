@@ -2,7 +2,7 @@
 
 * Added a `ties` argument to `cumulcalib()` and `cumulcalibITE()`, controlling
   how observations with exactly tied predictor values (`p` for `cumulcalib()`,
-  `h` for `cumulcalibITE()`) are handled. Options are `"average"` (the new
+  `h` for `cumulcalibITE()`) are handled. Options are `"group"` (the new
   default), `"random"`, and `"ignore"`. Ties are only checked for, and acted
   on, when they are actually present, so there is no overhead for the common
   case of continuous, untied predictors.
@@ -12,9 +12,9 @@
   produce many repeated predicted values), results depended on the arbitrary
   order in which tied observations appeared in the input data -- the same
   data could yield a different p-value on every run. With the new default,
-  `ties = "average"`, results are fully deterministic regardless of input row
-  order: for `cumulcalib()`, the outcome is averaged within each tied group of
-  predicted risks before computing the cumulative-sum process; for
+  `ties = "group"`, results are fully deterministic regardless of input row
+  order: tied observations are treated as one group (a macro-observation) and
+  the time/location change is averaged out across the group; for
   `cumulcalibITE()`, this is supported for both the conditional (`p` supplied)
   and marginal (`p = NULL`) approaches. `ties = "ignore"` reproduces the
   previous (order-dependent) behavior, and `ties = "random"` resolves ties via

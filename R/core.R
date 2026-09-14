@@ -8,7 +8,7 @@
 #' @param p vector of predicted probabilities.
 #' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
 #' @param ordered if TRUE, y and p are already ordered based on ascending values of p. This is to speed up simulations.
-#' @param ties how to handle tied values of \code{p}. \code{"average"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
+#' @param ties how to handle tied values of \code{p}. \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
 #' @param n_sim if >0, indicates a simulation-based test is requested for inference.
 #' @examples
 #' pi <- rbeta(1000,1,2)
@@ -22,7 +22,7 @@ cumulcalib <- function(
   p,
   method = c("BB", "BM"),
   ordered = FALSE,
-  ties = c("average", "random", "ignore"),
+  ties = c("group", "random", "ignore"),
   n_sim = 0
 ) {
   ties <- match.arg(ties)
@@ -43,10 +43,10 @@ cumulcalib <- function(
   if (length(tied_lengths) > 0) {
     n_groups <- length(tied_lengths)
     n_affected <- sum(tied_lengths)
-    if (ties == "average") {
+    if (ties == "group") {
       y <- stats::ave(y, p, FUN = mean)
       message(sprintf(
-        "cumulcalib: %d groups of tied predicted risk values (%d of %d observations) detected; averaging Y within tied groups (ties = \"average\").",
+        "cumulcalib: %d groups of tied predicted risk values (%d of %d observations) detected; averaging Y within tied groups (ties = \"group\").",
         n_groups,
         n_affected,
         n
@@ -111,7 +111,7 @@ cumulcalib <- function(
 #' @param p optional vector of predicted baseline risks (the risk without treatment). If omitted (NULL), the marginal test is performed using observed event rates in the treated and control groups; if supplied, the conditional test is performed. Default is NULL.
 #' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
 #' @param ordered if TRUE, the data are already ordered based on ascending values of h. This is to speed up simulations.
-#' @param ties how to handle tied values of \code{h} (observations sharing the exact same predicted ITE). \code{"average"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
+#' @param ties how to handle tied values of \code{h} (observations sharing the exact same predicted ITE). \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
 #' @param n_sim if >0, indicates a simulation-based test is requested for inference.
 #' @param aux if TRUE, auxiliary quantities (used internally and for diagnostics) are returned in the result. Default is FALSE.
 #' @examples
@@ -130,7 +130,7 @@ cumulcalibITE <- function(
   p = NULL,
   method = c("BB", "BM"),
   ordered = FALSE,
-  ties = c("average", "random", "ignore"),
+  ties = c("group", "random", "ignore"),
   n_sim = 0,
   aux = FALSE
 ) {
@@ -150,7 +150,7 @@ cumulcalibITE <- function(
   #Detect ties in h (adjacent equal values, since h is now sorted); act on
   #them only when present, so there is no overhead in the common untied case
   run_lengths <- rle(h)$lengths
-  apply_average <- FALSE
+  apply_group <- FALSE
   if (any(run_lengths > 1)) {
     n_groups <- sum(run_lengths > 1)
     n_affected <- sum(run_lengths[run_lengths > 1])
@@ -176,9 +176,9 @@ cumulcalibITE <- function(
         n
       ))
     } else {
-      apply_average <- TRUE
+      apply_group <- TRUE
       message(sprintf(
-        "cumulcalibITE: %d groups of tied predicted ITE values (%d of %d observations) detected; redistributing the total location/variance change within each tied group evenly across its observations (ties = \"average\").",
+        "cumulcalibITE: %d groups of tied predicted ITE values (%d of %d observations) detected; redistributing the total location/variance change within each tied group evenly across its observations (ties = \"group\").",
         n_groups,
         n_affected,
         n
@@ -194,7 +194,7 @@ cumulcalibITE <- function(
   Y11 <- cumsum(a * y)
   B <- k * (ifelse(k0 != 0, Y01 / k0, 0) - ifelse(k1 != 0, Y11 / k1, 0))
 
-  if (apply_average) {
+  if (apply_group) {
     #Group structure shared by the location (B) interpolation below, and, for
     #the marginal approach, the variance (s2) interpolation further down. B
     #(and, for the marginal approach, s2) are direct functions of the
@@ -220,7 +220,7 @@ cumulcalibITE <- function(
   }
 
   if (!is.null(p)) {
-    if (apply_average) {
+    if (apply_group) {
       #Redistribute each tied group's aggregate location/variance change evenly
       #across its observations, using the GROUP-END (not each row's own
       #incremental) counts and position; this is what makes the result
@@ -282,7 +282,7 @@ cumulcalibITE <- function(
     s2 <- k^2 *
       (ifelse(k0 != 0, Y01 / k0 * (1 - Y01 / k0) / k0, 0) +
         ifelse(k1 != 0, Y11 / k1 * (1 - Y11 / k1) / k1, 0))
-    if (apply_average) {
+    if (apply_group) {
       s2 <- interpolate_across_groups(s2)
     }
     if (aux) mu <- h

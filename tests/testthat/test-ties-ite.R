@@ -2,7 +2,7 @@
 # (p supplied). See tests/testthat/test-ties.R for the (structurally simpler)
 # cumulcalib() risk-model case.
 
-test_that("no ties: default 'average' matches 'ignore' and is silent (conditional)", {
+test_that("no ties: default 'group' matches 'ignore' and is silent (conditional)", {
   set.seed(201)
   n <- 500
   p <- rbeta(n, 1, 2)
@@ -18,7 +18,7 @@ test_that("no ties: default 'average' matches 'ignore' and is silent (conditiona
   expect_equal(res$C_star, res_ignore$C_star)
 })
 
-test_that("ties = 'average' (conditional) matches the hand-derived group formula", {
+test_that("ties = 'group' (conditional) matches the hand-derived group formula", {
   # A single tie group (h* = 0.5) with heterogeneous p, both arms, preceded by
   # some untied context so K0_end/K1_end/K_end are non-trivial.
   h_pre <- c(0.1, 0.2, 0.3)
@@ -41,7 +41,7 @@ test_that("ties = 'average' (conditional) matches the hand-derived group formula
   y <- c(y_pre, y_tie, y_post)
   p <- c(p_pre, p_tie, p_post)
 
-  res <- suppressWarnings(suppressMessages(cumulcalibITE(y, h = h, a = a, p = p, ties = "average")))
+  res <- suppressWarnings(suppressMessages(cumulcalibITE(y, h = h, a = a, p = p, ties = "group")))
 
   # Hand-derived closed form for the tie group's aggregate contribution
   # (see the design discussion this implements: evaluate the group at its own
@@ -75,7 +75,7 @@ test_that("ties = 'average' (conditional) matches the hand-derived group formula
   expect_equal(observed_dt, expected_dt, tolerance = 1e-8)
 })
 
-test_that("ties = 'average' (conditional) produces a straight line (equal steps) across a tie group", {
+test_that("ties = 'group' (conditional) produces a straight line (equal steps) across a tie group", {
   set.seed(203)
   h_pre <- sort(runif(50, 0, 0.4))
   a_pre <- rbinom(50, 1, 0.5)
@@ -98,7 +98,7 @@ test_that("ties = 'average' (conditional) produces a straight line (equal steps)
   y <- c(y_pre, y_tie, y_post)
   p <- c(p_pre, p_tie, p_post)
 
-  res <- suppressWarnings(suppressMessages(cumulcalibITE(y, h = h, a = a, p = p, ties = "average")))
+  res <- suppressWarnings(suppressMessages(cumulcalibITE(y, h = h, a = a, p = p, ties = "group")))
   tie_rows <- (length(h_pre) + 1):(length(h_pre) + m)
 
   # location (S) and time (t) must both advance in exactly equal steps across
@@ -109,7 +109,7 @@ test_that("ties = 'average' (conditional) produces a straight line (equal steps)
   expect_equal(dt, rep(dt[1], length(dt)), tolerance = 1e-8)
 })
 
-test_that("ties = 'average' (conditional) is invariant to input row order, unlike 'ignore'", {
+test_that("ties = 'group' (conditional) is invariant to input row order, unlike 'ignore'", {
   set.seed(11)
   n_tie <- 200
   h_star <- 0.03
@@ -145,14 +145,14 @@ test_that("ties = 'average' (conditional) is invariant to input row order, unlik
   res_ig_2 <- suppressWarnings(cumulcalibITE(d_shuffled$y, h = d_shuffled$h, a = d_shuffled$a, p = d_shuffled$p, ties = "ignore"))
   expect_false(isTRUE(all.equal(res_ig_1$C_star, res_ig_2$C_star)))
 
-  res_av_1 <- suppressMessages(cumulcalibITE(d_spiked$y, h = d_spiked$h, a = d_spiked$a, p = d_spiked$p, ties = "average"))
-  res_av_2 <- suppressMessages(cumulcalibITE(d_shuffled$y, h = d_shuffled$h, a = d_shuffled$a, p = d_shuffled$p, ties = "average"))
-  expect_equal(res_av_1$data, res_av_2$data)
-  expect_equal(res_av_1$C_star, res_av_2$C_star)
-  expect_equal(res_av_1$by_method$BB$pval, res_av_2$by_method$BB$pval)
+  res_grp_1 <- suppressMessages(cumulcalibITE(d_spiked$y, h = d_spiked$h, a = d_spiked$a, p = d_spiked$p, ties = "group"))
+  res_grp_2 <- suppressMessages(cumulcalibITE(d_shuffled$y, h = d_shuffled$h, a = d_shuffled$a, p = d_shuffled$p, ties = "group"))
+  expect_equal(res_grp_1$data, res_grp_2$data)
+  expect_equal(res_grp_1$C_star, res_grp_2$C_star)
+  expect_equal(res_grp_1$by_method$BB$pval, res_grp_2$by_method$BB$pval)
 })
 
-test_that("ties = 'average' emits a message; 'ignore'/'random' emit warnings (conditional)", {
+test_that("ties = 'group' emits a message; 'ignore'/'random' emit warnings (conditional)", {
   set.seed(22)
   n <- 200
   p <- c(rep(0.3, 60), rep(0.7, 60), runif(80, 0, 1))
@@ -160,14 +160,14 @@ test_that("ties = 'average' emits a message; 'ignore'/'random' emit warnings (co
   h <- c(rep(0.01, 60), rep(0.02, 60), runif(80, 0, 0.05))
   y <- rbinom(n, 1, pmax(0, pmin(1, p - a * h)))
 
-  expect_message(cumulcalibITE(y, h = h, a = a, p = p, ties = "average"), "2 groups of tied")
-  expect_no_warning(suppressMessages(cumulcalibITE(y, h = h, a = a, p = p, ties = "average")))
+  expect_message(cumulcalibITE(y, h = h, a = a, p = p, ties = "group"), "2 groups of tied")
+  expect_no_warning(suppressMessages(cumulcalibITE(y, h = h, a = a, p = p, ties = "group")))
 
   expect_warning(cumulcalibITE(y, h = h, a = a, p = p, ties = "ignore"), "ties = \"ignore\"")
   expect_warning(cumulcalibITE(y, h = h, a = a, p = p, ties = "random"), "randomly reordered")
 })
 
-test_that("ties = 'average' (marginal) matches 'ignore' and is silent when there are no ties", {
+test_that("ties = 'group' (marginal) matches 'ignore' and is silent when there are no ties", {
   set.seed(24)
   n <- 500
   a <- rbinom(n, 1, 0.5)
@@ -182,18 +182,18 @@ test_that("ties = 'average' (marginal) matches 'ignore' and is silent when there
   expect_equal(res$C_star, res_ignore$C_star)
 })
 
-test_that("ties = 'average' (marginal) emits a message", {
+test_that("ties = 'group' (marginal) emits a message", {
   set.seed(23)
   n <- 200
   a <- rbinom(n, 1, 0.5)
   h <- c(rep(0.01, 60), rep(0.02, 60), runif(80, 0, 0.05))
   y <- rbinom(n, 1, 0.3)
 
-  expect_message(cumulcalibITE(y, h = h, a = a, ties = "average"), "2 groups of tied")
-  expect_no_warning(suppressMessages(cumulcalibITE(y, h = h, a = a, ties = "average")))
+  expect_message(cumulcalibITE(y, h = h, a = a, ties = "group"), "2 groups of tied")
+  expect_no_warning(suppressMessages(cumulcalibITE(y, h = h, a = a, ties = "group")))
 })
 
-test_that("ties = 'average' (marginal) is invariant to input row order, unlike 'ignore'", {
+test_that("ties = 'group' (marginal) is invariant to input row order, unlike 'ignore'", {
   set.seed(25)
   n_tie <- 200
   h_star <- 0.03
@@ -225,11 +225,11 @@ test_that("ties = 'average' (marginal) is invariant to input row order, unlike '
   res_ig_2 <- suppressWarnings(cumulcalibITE(d_shuffled$y, h = d_shuffled$h, a = d_shuffled$a, ties = "ignore"))
   expect_false(isTRUE(all.equal(res_ig_1$C_star, res_ig_2$C_star)))
 
-  res_av_1 <- suppressMessages(cumulcalibITE(d_spiked$y, h = d_spiked$h, a = d_spiked$a, ties = "average"))
-  res_av_2 <- suppressMessages(cumulcalibITE(d_shuffled$y, h = d_shuffled$h, a = d_shuffled$a, ties = "average"))
-  expect_equal(res_av_1$data, res_av_2$data)
-  expect_equal(res_av_1$C_star, res_av_2$C_star)
-  expect_equal(res_av_1$by_method$BB$pval, res_av_2$by_method$BB$pval)
+  res_grp_1 <- suppressMessages(cumulcalibITE(d_spiked$y, h = d_spiked$h, a = d_spiked$a, ties = "group"))
+  res_grp_2 <- suppressMessages(cumulcalibITE(d_shuffled$y, h = d_shuffled$h, a = d_shuffled$a, ties = "group"))
+  expect_equal(res_grp_1$data, res_grp_2$data)
+  expect_equal(res_grp_1$C_star, res_grp_2$C_star)
+  expect_equal(res_grp_1$by_method$BB$pval, res_grp_2$by_method$BB$pval)
 })
 
 test_that("ties = 'random' (conditional) is reproducible under a fixed seed", {
