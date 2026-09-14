@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 cumulcalib provides non-parametric, tuning-parameter-free assessment of model calibration on the cumulative-sum domain, for two settings:
 
 - **Risk prediction models** — `cumulcalib()` assesses the calibration of predicted risks (Sadatsafavi and Petkau 2024, <https://doi.org/10.1002/sim.10138>).
-- **Individualized treatment effect (ITE) models** — `cumulcalibITE()` assesses the moderate calibration of predicted treatment benefits using data from a randomized trial (Sadatsafavi et al. 2025, <https://doi.org/10.48550/arXiv.2512.08140>).
+- **Individualized treatment effect (ITE) models** — `cumulcalibITE()` assesses the moderate calibration of predicted treatment benefits using data from a randomized trial (Sadatsafavi et al. 2026, <https://doi.org/10.1002/sim.70724>).
 
 The package comes with two tutorials (vignettes), which you can view after installing the package:
 
