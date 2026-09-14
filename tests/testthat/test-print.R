@@ -46,7 +46,7 @@ test_that("print reports the direction of C* (worded tag) for ITE", {
   a <- rbinom(n, 1, 0.5)
   h <- rep(0.10, n)              # model claims benefit of 0.10 ...
   y <- rbinom(n, 1, p)           # ... but treatment truly has ~no effect
-  out <- capture.output(print(cumulcalibITE(y, h = h, a = a)))
+  out <- capture.output(print(suppressWarnings(cumulcalibITE(y, h = h, a = a))))
   expect_true(any(grepl("Maximum cumulative calibration error", out)))
   expect_true(any(grepl("observed benefit < predicted", out)))
 })
