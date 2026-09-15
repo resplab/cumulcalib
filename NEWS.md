@@ -1,5 +1,10 @@
 # cumulcalib 0.2.0
 
+* The ITE methodology paper cited in the Description field (Sadatsafavi et
+  al.) is now published; the citation has been updated from the arXiv
+  preprint used in 0.1.0 to the published article in Statistics in Medicine
+  (<doi:10.1002/sim.70724>).
+
 * Added a `ties` argument to `cumulcalib()` and `cumulcalibITE()`, controlling
   how observations with exactly tied predictor values (`p` for `cumulcalib()`,
   `h` for `cumulcalibITE()`) are handled. Options are `"group"` (the new
