@@ -246,3 +246,104 @@ test_that("ties = 'random' (conditional) is reproducible under a fixed seed", {
   expect_equal(res1$data, res2$data)
   expect_equal(res1$C_star, res2$C_star)
 })
+
+# --- Degenerate tie-group structures -----------------------------------------
+# These exercise code paths the tests above never reach: a tied group whose
+# members all belong to a single treatment arm (so the group's end-state count
+# for the *other* arm is what the zero-guards key on), tie blocks pinned to the
+# very first and very last positions (where the interpolation's implicit
+# "starts from 0" boundary applies), and a sample that is one single tie group.
+
+make_single_arm <- function(a_tie) {
+  set.seed(33)
+  n_tie <- 60
+  h <- sort(c(runif(100, 0, 0.02), rep(0.05, n_tie), runif(100, 0.06, 0.1)))
+  p <- runif(260, 0.3, 0.8)
+  a <- c(rbinom(100, 1, 0.5), rep(a_tie, n_tie), rbinom(100, 1, 0.5))
+  y <- rbinom(260, 1, pmax(0, pmin(1, p - a * h)))
+  list(y = y, h = h, a = a, p = p, tie_rows = 101:160)
+}
+
+for (arm in c(0, 1)) {
+  arm_label <- if (arm == 0) "control" else "treated"
+
+  test_that(paste0("tie group containing only the ", arm_label,
+                   " arm is handled (both approaches)"), {
+    d <- make_single_arm(arm)
+
+    for (approach in c("conditional", "marginal")) {
+      res <- suppressWarnings(suppressMessages(
+        if (approach == "conditional") {
+          cumulcalibITE(d$y, h = d$h, a = d$a, p = d$p, ties = "group")
+        } else {
+          cumulcalibITE(d$y, h = d$h, a = d$a, ties = "group")
+        }
+      ))
+      info <- paste(arm_label, approach)
+      expect_true(all(is.finite(res$data[, "S"])), info = info)
+      expect_true(all(is.finite(res$data[, "t"])), info = info)
+
+      # The defining property: both location and time advance in exactly equal
+      # steps (a straight line) across the block, so it can never host a
+      # spurious interior extremum. Note global monotonicity of t is NOT
+      # asserted: the marginal approach's s2 is not monotone in general (it
+      # behaves that way under ties = "ignore" too, in untied regions).
+      dS <- diff(res$data[d$tie_rows, "S"])
+      dt <- diff(res$data[d$tie_rows, "t"])
+      expect_equal(dS, rep(dS[1], length(dS)), tolerance = 1e-8, ignore_attr = TRUE)
+      expect_equal(dt, rep(dt[1], length(dt)), tolerance = 1e-8, ignore_attr = TRUE)
+
+      # the conditional approach accumulates non-negative variance, so its
+      # time change is monotone everywhere
+      if (approach == "conditional") {
+        expect_false(is.unsorted(res$data[, "t"]), info = info)
+      }
+    }
+  })
+}
+
+test_that("tie blocks at the first and last positions are order-invariant", {
+  set.seed(31)
+  h <- sort(c(rep(0.01, 80), runif(140, 0.02, 0.09), rep(0.1, 80)))
+  a <- rbinom(300, 1, 0.5)
+  p <- runif(300, 0.3, 0.8)
+  y <- rbinom(300, 1, pmax(0, pmin(1, p - a * h)))
+
+  set.seed(7)
+  o <- sample(300)
+  # every vector must be permuted together, or the rows no longer correspond
+  fit <- function(idx, conditional) {
+    suppressWarnings(suppressMessages(
+      if (conditional) {
+        cumulcalibITE(y[idx], h = h[idx], a = a[idx], p = p[idx], ties = "group")
+      } else {
+        cumulcalibITE(y[idx], h = h[idx], a = a[idx], ties = "group")
+      }
+    ))
+  }
+  expect_equal(fit(seq_len(300), FALSE)$C_star, fit(o, FALSE)$C_star,
+               tolerance = 1e-10)
+  expect_equal(fit(seq_len(300), TRUE)$C_star, fit(o, TRUE)$C_star,
+               tolerance = 1e-10)
+})
+
+test_that("a sample that is one single tie group is handled (both approaches)", {
+  set.seed(35)
+  n <- 200
+  h <- rep(0.05, n)
+  a <- rbinom(n, 1, 0.5)
+  p <- runif(n, 0.3, 0.8)
+  y <- rbinom(n, 1, pmax(0, pmin(1, p - a * h)))
+
+  r_cond <- suppressWarnings(suppressMessages(
+    cumulcalibITE(y, h = h, a = a, p = p, ties = "group")))
+  r_marg <- suppressWarnings(suppressMessages(
+    cumulcalibITE(y, h = h, a = a, ties = "group")))
+
+  for (res in list(r_cond, r_marg)) {
+    expect_true(all(is.finite(res$data[, "S"])))
+    # one group spanning everything => time advances in exactly equal steps
+    expect_equal(res$data[, "t"], seq_len(n) / n, tolerance = 1e-10,
+                 ignore_attr = TRUE)
+  }
+})
