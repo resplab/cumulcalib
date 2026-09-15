@@ -25,18 +25,18 @@ cumulcalibITE(
 
 \item{p}{optional vector of predicted baseline risks (the risk without treatment). If omitted (NULL), the marginal test is performed using observed event rates in the treated and control groups; if supplied, the conditional test is performed. Default is NULL.}
 
-\item{method}{string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")}
+\item{method}{string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test with only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")}
 
 \item{ordered}{if TRUE, the data are already ordered based on ascending values of h. This is to speed up simulations.}
 
-\item{ties}{how to handle tied values of \code{h} (observations sharing the exact same predicted ITE). \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.}
+\item{ties}{how to handle tied values of \code{h} (observations sharing the exact same predicted ITE). \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is valid, but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.}
 
 \item{n_sim}{if >0, indicates a simulation-based test is requested for inference.}
 
 \item{aux}{if TRUE, auxiliary quantities (used internally and for diagnostics) are returned in the result. Default is FALSE.}
 }
 \value{
-an objective of class cumulcalib that can be printed or plotted
+an object of class cumulcalib that can be printed or plotted
 }
 \description{
 This is the core function for performing cumulative calibration assessment for

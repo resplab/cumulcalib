@@ -28,6 +28,34 @@ test_that("ties = 'group' matches manual group-averaging of y", {
   expect_equal(res$C_star, max(abs(C_expected)), tolerance = 1e-10)
 })
 
+test_that("ties = 'group' groups by exact equality, not by printed representation", {
+  # 0.1 + 0.2 and 0.3 are NOT bitwise equal, but both format as "0.3", so any
+  # implementation that groups via as.character()/factor() (e.g. stats::ave())
+  # would wrongly merge them. Only the exact 0.7 pair is a tie here.
+  v <- 0.1 + 0.2
+  expect_false(v == 0.3)
+
+  p <- c(v, 0.3, 0.7, 0.7)
+  y <- c(1, 0, 1, 0)
+  n <- length(p)
+
+  res <- suppressWarnings(suppressMessages(cumulcalib(y, p, ties = "group")))
+
+  # note 0.1 + 0.2 > 0.3, so the internal sort swaps the first two rows
+  o <- order(p)
+  p_s <- p[o]
+  y_s <- y[o]
+  # the two near-ties keep their own y (not averaged); only the 0.7 pair is
+  y_expected <- c(y_s[1], y_s[2], mean(y_s[3:4]), mean(y_s[3:4]))
+  expect_equal(res$data[, "C"], cumsum(y_expected - p_s) / n,
+               tolerance = 1e-12, ignore_attr = TRUE)
+  # the tell-tale: under as.character() grouping both would collapse to 0.5
+  expect_false(isTRUE(all.equal(y_expected[1], y_expected[2])))
+
+  # and the reported count must match the exact-equality grouping
+  expect_message(cumulcalib(y, p, ties = "group"), "1 groups of tied")
+})
+
 test_that("ties = 'group' emits a message (not a warning) reporting the ties", {
   # Large enough that T_ = sum(p(1-p)) >= 30, so the unrelated small-sample
   # warning doesn't confound this check.

@@ -2,13 +2,13 @@
 #'
 #' This is the core function for performing cumulative calibration assessment
 #'
-#' @return an objective of class cumulcalib that can be printed or plotted
+#' @return an object of class cumulcalib that can be printed or plotted
 #  @seealso [stringi::stri_length()] which this function wraps.
 #' @param y vector of binary responses
 #' @param p vector of predicted probabilities.
-#' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
+#' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test with only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
 #' @param ordered if TRUE, y and p are already ordered based on ascending values of p. This is to speed up simulations.
-#' @param ties how to handle tied values of \code{p}. \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
+#' @param ties how to handle tied values of \code{p}. \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is valid, but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
 #' @param n_sim if >0, indicates a simulation-based test is requested for inference.
 #' @examples
 #' pi <- rbeta(1000,1,2)
@@ -38,13 +38,18 @@ cumulcalib <- function(
 
   #Detect ties in p (adjacent equal values, since p is now sorted); act on
   #them only when present, so there is no overhead in the common untied case
-  tied_lengths <- rle(p)$lengths
-  tied_lengths <- tied_lengths[tied_lengths > 1]
+  run_lengths <- rle(p)$lengths
+  tied_lengths <- run_lengths[run_lengths > 1]
   if (length(tied_lengths) > 0) {
     n_groups <- length(tied_lengths)
     n_affected <- sum(tied_lengths)
     if (ties == "group") {
-      y <- stats::ave(y, p, FUN = mean)
+      #Replace Y by its within-group mean. The groups are exactly those found
+      #by rle() above; stats::ave() is deliberately avoided here because it
+      #groups by as.character(p) (15 significant digits) and would therefore
+      #merge values that are not bitwise equal, i.e. values not detected as ties.
+      grp <- rep(seq_along(run_lengths), times = run_lengths)
+      y <- (diff(c(0, cumsum(y)[cumsum(run_lengths)])) / run_lengths)[grp]
       message(sprintf(
         "cumulcalib: %d groups of tied predicted risk values (%d of %d observations) detected; averaging Y within tied groups (ties = \"group\").",
         n_groups,
@@ -75,7 +80,7 @@ cumulcalib <- function(
   T_ <- sum(p * (1 - p)) #Total 'time'
   if (T_ < 30) {
     warning(
-      "Total obsered time (sum(pi*(1-pi))) is less than 30; the data might be too small for reliable inference."
+      "Total observed time (sum(pi*(1-pi))) is less than 30; the data might be too small for reliable inference."
     )
   }
   t <- cumsum(p * (1 - p)) / T_ #time values at each p
@@ -104,14 +109,14 @@ cumulcalib <- function(
 #' This is the core function for performing cumulative calibration assessment for
 #' models that predict individual treatment effects (treatment benefit).
 #'
-#' @return an objective of class cumulcalib that can be printed or plotted
+#' @return an object of class cumulcalib that can be printed or plotted
 #' @param y vector of binary responses
 #' @param h vector of predicted treatment benefits (the predicted reduction in outcome risk due to treatment).
 #' @param a treatment indicator (1 if treated, 0 if control).
 #' @param p optional vector of predicted baseline risks (the risk without treatment). If omitted (NULL), the marginal test is performed using observed event rates in the treated and control groups; if supplied, the conditional test is performed. Default is NULL.
-#' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
+#' @param method string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test with only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")
 #' @param ordered if TRUE, the data are already ordered based on ascending values of h. This is to speed up simulations.
-#' @param ties how to handle tied values of \code{h} (observations sharing the exact same predicted ITE). \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
+#' @param ties how to handle tied values of \code{h} (observations sharing the exact same predicted ITE). \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is valid, but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.
 #' @param n_sim if >0, indicates a simulation-based test is requested for inference.
 #' @param aux if TRUE, auxiliary quantities (used internally and for diagnostics) are returned in the result. Default is FALSE.
 #' @examples
@@ -189,7 +194,6 @@ cumulcalibITE <- function(
   k <- 1:n
   k1 <- cumsum(a)
   k0 <- k - k1
-  Y1 <- cumsum(y)
   Y01 <- cumsum((1 - a) * y)
   Y11 <- cumsum(a * y)
   B <- k * (ifelse(k0 != 0, Y01 / k0, 0) - ifelse(k1 != 0, Y11 / k1, 0))
@@ -292,7 +296,7 @@ cumulcalibITE <- function(
   T_ <- s2[n] #Total 'time'
   if (T_ < 30) {
     warning(
-      "Total obsered time (sum(pi*(1-pi))) is less than 30; the data might be too small for reliable inference."
+      "Total observed time (the accumulated variance of the cumulative process) is less than 30; the data might be too small for reliable inference."
     )
   }
   t <- s2 / T_

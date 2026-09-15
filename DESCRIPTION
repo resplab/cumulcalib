@@ -24,4 +24,3 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Language: en-US
 Config/roxygen2/version: 8.0.0
-RoxygenNote: 7.3.3

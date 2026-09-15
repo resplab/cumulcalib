@@ -18,16 +18,16 @@ cumulcalib(
 
 \item{p}{vector of predicted probabilities.}
 
-\item{method}{string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")}
+\item{method}{string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test with only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")}
 
 \item{ordered}{if TRUE, y and p are already ordered based on ascending values of p. This is to speed up simulations.}
 
-\item{ties}{how to handle tied values of \code{p}. \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.}
+\item{ties}{how to handle tied values of \code{p}. \code{"group"} (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. \code{"random"} randomly reorders tied observations; this is valid, but results will vary across runs unless a seed is set. \code{"ignore"} keeps tied observations in their input order.}
 
 \item{n_sim}{if >0, indicates a simulation-based test is requested for inference.}
 }
 \value{
-an objective of class cumulcalib that can be printed or plotted
+an object of class cumulcalib that can be printed or plotted
 }
 \description{
 This is the core function for performing cumulative calibration assessment
