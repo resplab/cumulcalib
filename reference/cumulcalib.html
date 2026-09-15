@@ -89,7 +89,7 @@
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test wit only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")</p></dd>
+<dd><p>string with either BB (Brownian bridge test, default method), BM (Brownian motion test), BM2p (two-part BM test - experimental), BB1p (one-part BB test with only the 'bridge' component). Multiple methods can be specified. The first one will be the 'main' method (e.g., when submitting the resulting object to plot()). Default is c("BB","BM")</p></dd>
 
 
 <dt id="arg-ordered">ordered<a class="anchor" aria-label="anchor" href="#arg-ordered"></a></dt>
@@ -97,7 +97,7 @@
 
 
 <dt id="arg-ties">ties<a class="anchor" aria-label="anchor" href="#arg-ties"></a></dt>
-<dd><p>how to handle tied values of <code>p</code>. <code>"group"</code> (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. <code>"random"</code> randomly reorders tied observations; this is a valid but results will vary across runs unless a seed is set. <code>"ignore"</code> keeps tied observations in their input order.</p></dd>
+<dd><p>how to handle tied values of <code>p</code>. <code>"group"</code> (default) considers tied observations as one macro-observation and then averages out the time and location changes across tied observations. <code>"random"</code> randomly reorders tied observations; this is valid, but results will vary across runs unless a seed is set. <code>"ignore"</code> keeps tied observations in their input order.</p></dd>
 
 
 <dt id="arg-n-sim">n_sim<a class="anchor" aria-label="anchor" href="#arg-n-sim"></a></dt>
@@ -106,7 +106,7 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an objective of class cumulcalib that can be printed or plotted</p>
+    <p>an object of class cumulcalib that can be printed or plotted</p>
     </div>
 
     <div id="ref-examples">
